@@ -1,0 +1,14 @@
+[
+{
+  "directory": "D:/NU/SU26/computer-vision/project-1/bin",
+  "command": "C:\\PROGRA~1\\LLVM\\bin\\CLANG_~1.EXE -isystem C:/dev/vcpkg/installed/x64-windows/include/opencv4 -O0 -g -Xclang -gcodeview -std=gnu++17 -D_DEBUG -D_DLL -D_MT -Xclang --dependent-lib=msvcrtd -o CMakeFiles\\vidDisplay.dir\\src\\vidDisplay.cpp.obj -c D:\\NU\\SU26\\computer-vision\\project-1\\src\\vidDisplay.cpp",
+  "file": "D:/NU/SU26/computer-vision/project-1/src/vidDisplay.cpp",
+  "output": "D:/NU/SU26/computer-vision/project-1/bin/CMakeFiles/vidDisplay.dir/src/vidDisplay.cpp.obj"
+},
+{
+  "directory": "D:/NU/SU26/computer-vision/project-1/bin",
+  "command": "C:\\PROGRA~1\\LLVM\\bin\\CLANG_~1.EXE -isystem C:/dev/vcpkg/installed/x64-windows/include/opencv4 -O0 -g -Xclang -gcodeview -std=gnu++17 -D_DEBUG -D_DLL -D_MT -Xclang --dependent-lib=msvcrtd -o CMakeFiles\\imgDisplay.dir\\src\\imgDisplay.cpp.obj -c D:\\NU\\SU26\\computer-vision\\project-1\\src\\imgDisplay.cpp",
+  "file": "D:/NU/SU26/computer-vision/project-1/src/imgDisplay.cpp",
+  "output": "D:/NU/SU26/computer-vision/project-1/bin/CMakeFiles/imgDisplay.dir/src/imgDisplay.cpp.obj"
+}
+]

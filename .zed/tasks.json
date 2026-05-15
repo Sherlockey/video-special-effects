@@ -1,0 +1,17 @@
+[
+  {
+    "label": "build",
+    "command": "cmake --build bin",
+    "use_new_terminal": false,
+  },
+  {
+    "label": "run imgDisplay",
+    "command": "./bin/imgDisplay.exe ./data/pic.0004.jpg",
+    "use_new_terminal": false,
+  },
+  {
+    "label": "run vidDisplay",
+    "command": "./bin/vidDisplay.exe",
+    "use_new_terminal": false,
+  },
+]
