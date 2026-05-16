@@ -31,6 +31,9 @@ int main(int argc, char *argv[]) {
     cv::namedWindow("Video", 1); // identifies a window
     cv::Mat frame;
 
+    int saveCounter = 0; // used for image names
+    std::string saveFolder = "./data/";
+
     // Comment explaining what the major code block does
     for (;;) {
         *capdev >> frame; // get a new frame from the camera, treat as a stream
@@ -44,6 +47,17 @@ int main(int argc, char *argv[]) {
         char key = cv::waitKey(10);
         if (key == 'q') {
             break;
+        }
+        if (key == 's') {
+            std::string filename =
+                saveFolder + std::to_string(saveCounter) + ".jpg";
+            bool isSaved = cv::imwrite(filename, frame);
+            if (isSaved) {
+                std::cout << filename << " saved" << std::endl;
+                saveCounter++;
+            } else {
+                std::cout << "failed to save image: " << filename << std::endl;
+            }
         }
     }
 
