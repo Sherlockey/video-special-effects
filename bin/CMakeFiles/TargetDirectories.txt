@@ -1,5 +1,0 @@
-D:/NU/SU26/computer-vision/project-1/bin/CMakeFiles/copy_compile_commands.dir
-D:/NU/SU26/computer-vision/project-1/bin/CMakeFiles/vidDisplay.dir
-D:/NU/SU26/computer-vision/project-1/bin/CMakeFiles/imgDisplay.dir
-D:/NU/SU26/computer-vision/project-1/bin/CMakeFiles/edit_cache.dir
-D:/NU/SU26/computer-vision/project-1/bin/CMakeFiles/rebuild_cache.dir
