@@ -1,19 +1,28 @@
 /*
-   Jonathon Davis
-   2026-05-15
-   Purpose of the file
+    Jonathon Davis
+    2026-05-15
+    TODO Purpose of the file
 */
 
+#include "filter.cpp"
 #include <opencv2/opencv.hpp>
 
-/*
-    Description of what it does
+enum DisplayType {
+    kOriginal,
+    kGreyscale,
+    kAlt_greyscale,
+    kBlur5x5_1,
+};
 
-    @param argc
-    @param argv
-    @return
+/*
+    TODO Description of what it does
+
+    @param argc argument count with how many command line arguments provided
+    @param argv argument vector is an array of strings with command line args
+    @return exit status / return code sent back to OS
 */
 int main(int argc, char *argv[]) {
+    DisplayType displayType = kOriginal;
     cv::VideoCapture *capdev;
 
     // open the video device
@@ -41,14 +50,39 @@ int main(int argc, char *argv[]) {
             printf("frame is empty\n");
             break;
         }
-        cv::imshow("Video", frame);
+
+        // show image based upon current displayType
+        switch (displayType) {
+        case kOriginal: {
+            cv::imshow("Video", frame);
+            break;
+        }
+        case kGreyscale: {
+            cv::Mat greyscale_frame;
+            cv::cvtColor(frame, greyscale_frame, cv::COLOR_BGR2GRAY);
+            cv::imshow("Video", greyscale_frame);
+            break;
+        }
+        case kAlt_greyscale: {
+            cv::Mat alt_greyscale_frame;
+            greyscale(frame, alt_greyscale_frame);
+            cv::imshow("Video", alt_greyscale_frame);
+            break;
+        }
+        case kBlur5x5_1: {
+            cv::Mat blur_5x5_1_frame;
+            blur5x5_1(frame, blur_5x5_1_frame);
+            cv::imshow("Video", blur_5x5_1_frame);
+            break;
+        }
+        }
 
         // see if there is a waiting keystroke
         char key = cv::waitKey(10);
-        if (key == 'q') {
+        if (key == 'q') { // quit
             break;
         }
-        if (key == 's') {
+        if (key == 's') { // save
             std::string filename =
                 saveFolder + std::to_string(saveCounter) + ".jpg";
             bool isSaved = cv::imwrite(filename, frame);
@@ -57,6 +91,27 @@ int main(int argc, char *argv[]) {
                 saveCounter++;
             } else {
                 std::cout << "failed to save image: " << filename << std::endl;
+            }
+        }
+        if (key == 'g') { // greyscale
+            if (displayType == kGreyscale) {
+                displayType = kOriginal;
+            } else {
+                displayType = kGreyscale;
+            }
+        }
+        if (key == 'h') { // alternative greyscale
+            if (displayType == kAlt_greyscale) {
+                displayType = kOriginal;
+            } else {
+                displayType = kAlt_greyscale;
+            }
+        }
+        if (key == '1') { // blur5x5_1 (slow, using at<>)
+            if (displayType == kBlur5x5_1) {
+                displayType = kOriginal;
+            } else {
+                displayType = kBlur5x5_1;
             }
         }
     }
