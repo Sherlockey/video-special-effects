@@ -2,10 +2,11 @@
     Jonathon Davis
     2026-05-15
     Opens a video channel, creates a window, then loops capturing a new frame
-   and displaying it each time through the loop.
+   and displaying it in the current DisplayMode. Also displays frame timing.
 */
 
 #include "filter.cpp"
+#include <chrono>
 #include <opencv2/opencv.hpp>
 
 enum DisplayMode {
@@ -16,6 +17,25 @@ enum DisplayMode {
     kBlur5x5_2,
     kSepia,
 };
+
+std::ostream &operator<<(std::ostream &os, DisplayMode d) {
+    switch (d) {
+    case DisplayMode::kOriginal:
+        return os << "Original";
+    case DisplayMode::kGreyscale:
+        return os << "Greyscale";
+    case DisplayMode::kAltGreyscale:
+        return os << "Alternative Greyscale";
+    case DisplayMode::kBlur5x5_1:
+        return os << "Blur 5x5 1";
+    case DisplayMode::kBlur5x5_2:
+        return os << "Blur 5x5 2";
+    case DisplayMode::kSepia:
+        return os << "Sepia";
+    default:
+        return os << "Undefined";
+    }
+}
 
 /*
     TODO Description of what it does
@@ -54,6 +74,8 @@ int main(int argc, char *argv[]) {
             break;
         }
 
+        std::chrono::time_point<std::chrono::steady_clock> start;
+        std::chrono::time_point<std::chrono::steady_clock> end;
         // show image based upon current DisplayMode
         switch (displayMode) {
         case kOriginal: {
@@ -62,34 +84,48 @@ int main(int argc, char *argv[]) {
         }
         case kGreyscale: {
             cv::Mat greyscale_frame;
+            start = std::chrono::high_resolution_clock::now();
             cv::cvtColor(frame, greyscale_frame, cv::COLOR_BGR2GRAY);
+            end = std::chrono::high_resolution_clock::now();
             cv::imshow("Video", greyscale_frame);
             break;
         }
         case kAltGreyscale: {
             cv::Mat alt_greyscale_frame;
+            start = std::chrono::high_resolution_clock::now();
             greyscale(frame, alt_greyscale_frame);
+            end = std::chrono::high_resolution_clock::now();
             cv::imshow("Video", alt_greyscale_frame);
             break;
         }
         case kBlur5x5_1: {
             cv::Mat blur_5x5_1_frame;
+            start = std::chrono::high_resolution_clock::now();
             blur5x5_1(frame, blur_5x5_1_frame);
+            end = std::chrono::high_resolution_clock::now();
             cv::imshow("Video", blur_5x5_1_frame);
             break;
         }
         case kBlur5x5_2: {
             cv::Mat blur_5x5_2_frame;
+            start = std::chrono::high_resolution_clock::now();
             blur5x5_2(frame, blur_5x5_2_frame);
+            end = std::chrono::high_resolution_clock::now();
             cv::imshow("Video", blur_5x5_2_frame);
             break;
         }
         case kSepia: {
             cv::Mat sepia_frame;
+            start = std::chrono::high_resolution_clock::now();
             sepia(frame, sepia_frame);
+            end = std::chrono::high_resolution_clock::now();
             cv::imshow("Video", sepia_frame);
             break;
         }
+        }
+        std::chrono::duration<double, std::milli> elapsed = end - start;
+        if (displayMode != kOriginal) {
+            std::cout << displayMode << " took " << elapsed.count() << " ms\n";
         }
 
         // see if there is a waiting keystroke
