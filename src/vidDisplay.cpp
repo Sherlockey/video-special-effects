@@ -12,6 +12,7 @@ enum DisplayType {
     kGreyscale,
     kAlt_greyscale,
     kBlur5x5_1,
+    kBlur5x5_2,
 };
 
 /*
@@ -75,6 +76,12 @@ int main(int argc, char *argv[]) {
             cv::imshow("Video", blur_5x5_1_frame);
             break;
         }
+        case kBlur5x5_2: {
+            cv::Mat blur_5x5_2_frame;
+            blur5x5_2(frame, blur_5x5_2_frame);
+            cv::imshow("Video", blur_5x5_2_frame);
+            break;
+        }
         }
 
         // see if there is a waiting keystroke
@@ -107,11 +114,18 @@ int main(int argc, char *argv[]) {
                 displayType = kAlt_greyscale;
             }
         }
-        if (key == '1') { // blur5x5_1 (slow, using at<>)
+        if (key == '1') { // blur5x5_1 (slow, using at<> method)
             if (displayType == kBlur5x5_1) {
                 displayType = kOriginal;
             } else {
                 displayType = kBlur5x5_1;
+            }
+        }
+        if (key == '2') { // blur5x5_2 (fast, using ptr method)
+            if (displayType == kBlur5x5_2) {
+                displayType = kOriginal;
+            } else {
+                displayType = kBlur5x5_2;
             }
         }
     }
