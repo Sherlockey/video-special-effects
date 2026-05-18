@@ -7,7 +7,7 @@
 #include <opencv2/opencv.hpp>
 
 /*
-    TODO Description of what it does
+    Applies a Lightness greyscale filter to a src and outputs it in dst
 
     @param src source image
     @param dst destination image
@@ -15,8 +15,7 @@
 */
 
 int greyscale(cv::Mat &src, cv::Mat &dst) {
-    // src.copyTo(dst);
-    if (dst.empty()) {
+    if (dst.size() != src.size()) {
         dst.create(src.rows, src.cols, CV_8UC1);
     }
 
@@ -52,8 +51,8 @@ int greyscale(cv::Mat &src, cv::Mat &dst) {
 }
 
 /*
-    Implement a 5x5 blur filter using at<> method using integer approximation of
-   Gaussian:
+    Implementation of a 5x5 blur filter using at<> method using integer
+   approximation of Gaussian:
 
     1  2  4  2  1
     2  4  8  4  2
@@ -113,8 +112,8 @@ int blur5x5_1(cv::Mat &src, cv::Mat &dst) {
 }
 
 /*
-    Implement a 5x5 blur filter using separable 1x5 filters (vertical and
-   horizontal) and the ptr method:
+    Implementation of a 5x5 blur filter using separable 1x5 filters (vertical
+   and horizontal) and the ptr method:
 
     1  2  4  2  1
 
@@ -163,6 +162,40 @@ int blur5x5_2(cv::Mat &src, cv::Mat &dst) {
             }
         }
     }
+    return 0;
+}
+
+/*
+    Applies a sepia filter to a src and outputs it in dst
+
+    @param src source image
+    @param dst destination image
+    @return error code, 0 on success, -1 on failure
+*/
+int sepia(cv::Mat &src, cv::Mat &dst) {
+    cv::Mat tmp;
+    tmp.create(src.rows, src.cols, src.type());
+
+    for (int i = 0; i < src.rows; i++) {
+        cv::Vec3b *srcptr = src.ptr<cv::Vec3b>(i);
+        cv::Vec3b *tmpptr = tmp.ptr<cv::Vec3b>(i);
+        for (int j = 0; j < src.cols; j++) {
+            int blue = srcptr[j][2] * 0.272f + srcptr[j][1] * 0.534f +
+                       srcptr[j][0] * 0.131f;
+            blue = std::clamp(blue, 0, 255);
+
+            int green = srcptr[j][2] * 0.349f + srcptr[j][1] * 0.686f +
+                        srcptr[j][0] * 0.168f;
+            green = std::clamp(green, 0, 255);
+
+            int red = srcptr[j][2] * 0.393f + srcptr[j][1] * 0.769f +
+                      srcptr[j][0] * 0.189f;
+            red = std::clamp(red, 0, 255);
+
+            tmpptr[j] = cv::Vec3b(blue, green, red);
+        }
+    }
+    tmp.copyTo(dst);
 
     return 0;
 }

@@ -8,12 +8,13 @@
 #include "filter.cpp"
 #include <opencv2/opencv.hpp>
 
-enum DisplayType {
+enum DisplayMode {
     kOriginal,
     kGreyscale,
     kAltGreyscale,
     kBlur5x5_1,
     kBlur5x5_2,
+    kSepia,
 };
 
 /*
@@ -24,7 +25,7 @@ enum DisplayType {
     @return exit status / return code sent back to OS
 */
 int main(int argc, char *argv[]) {
-    DisplayType displayType = kOriginal;
+    DisplayMode displayMode = kOriginal;
     cv::VideoCapture *capdev;
 
     // open the video device
@@ -45,7 +46,7 @@ int main(int argc, char *argv[]) {
     int saveCounter = 0; // used for image names
     std::string saveFolder = "./data/";
 
-    // Comment explaining what the major code block does
+    // Main loop showing camera stream in current DisplayMode and handling input
     for (;;) {
         *capdev >> frame; // get a new frame from the camera, treat as a stream
         if (frame.empty()) {
@@ -53,8 +54,8 @@ int main(int argc, char *argv[]) {
             break;
         }
 
-        // show image based upon current displayType
-        switch (displayType) {
+        // show image based upon current DisplayMode
+        switch (displayMode) {
         case kOriginal: {
             cv::imshow("Video", frame);
             break;
@@ -83,6 +84,12 @@ int main(int argc, char *argv[]) {
             cv::imshow("Video", blur_5x5_2_frame);
             break;
         }
+        case kSepia: {
+            cv::Mat sepia_frame;
+            sepia(frame, sepia_frame);
+            cv::imshow("Video", sepia_frame);
+            break;
+        }
         }
 
         // see if there is a waiting keystroke
@@ -102,31 +109,38 @@ int main(int argc, char *argv[]) {
             }
         }
         if (key == 'g') { // greyscale
-            if (displayType == kGreyscale) {
-                displayType = kOriginal;
+            if (displayMode == kGreyscale) {
+                displayMode = kOriginal;
             } else {
-                displayType = kGreyscale;
+                displayMode = kGreyscale;
             }
         }
         if (key == 'h') { // alternative greyscale
-            if (displayType == kAltGreyscale) {
-                displayType = kOriginal;
+            if (displayMode == kAltGreyscale) {
+                displayMode = kOriginal;
             } else {
-                displayType = kAltGreyscale;
+                displayMode = kAltGreyscale;
             }
         }
         if (key == '1') { // blur5x5_1 (slow, using at<> method)
-            if (displayType == kBlur5x5_1) {
-                displayType = kOriginal;
+            if (displayMode == kBlur5x5_1) {
+                displayMode = kOriginal;
             } else {
-                displayType = kBlur5x5_1;
+                displayMode = kBlur5x5_1;
             }
         }
-        if (key == '2') { // blur5x5_2 (fast, using ptr method)
-            if (displayType == kBlur5x5_2) {
-                displayType = kOriginal;
+        if (key == '2') { // blur5x5_2 (fast, using ptr method and separable)
+            if (displayMode == kBlur5x5_2) {
+                displayMode = kOriginal;
             } else {
-                displayType = kBlur5x5_2;
+                displayMode = kBlur5x5_2;
+            }
+        }
+        if (key == 'p') { // sepia
+            if (displayMode == kSepia) {
+                displayMode = kOriginal;
+            } else {
+                displayMode = kSepia;
             }
         }
     }
