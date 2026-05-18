@@ -133,19 +133,21 @@ int main(int argc, char *argv[]) {
             start = std::chrono::high_resolution_clock::now();
             sobelX3x3(frame, sobel_x_3x3_output);
             end = std::chrono::high_resolution_clock::now();
+
             cv::Mat displayFrame;
             cv::convertScaleAbs(sobel_x_3x3_output, displayFrame);
             cv::imshow("Video", displayFrame);
             break;
         }
         case kSobelY3x3: {
-            cv::Mat sobel_y_3x3_frame;
+            cv::Mat sobel_y_3x3_output;
             start = std::chrono::high_resolution_clock::now();
-            sobelY3x3(frame, sobel_y_3x3_frame);
+            sobelY3x3(frame, sobel_y_3x3_output);
             end = std::chrono::high_resolution_clock::now();
 
-            cv::imshow("Video", sobel_y_3x3_frame);
-            break;
+            cv::Mat displayFrame;
+            cv::convertScaleAbs(sobel_y_3x3_output, displayFrame);
+            cv::imshow("Video", displayFrame);
         }
         }
         std::chrono::duration<double, std::milli> elapsed = end - start;
