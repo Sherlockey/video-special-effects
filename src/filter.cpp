@@ -127,7 +127,7 @@ int blur5x5_2(cv::Mat &src, cv::Mat &dst) {
     // allocate and initialize tmp
     src.copyTo(tmp);
 
-    // run the horizontal 1 x 5 convolution [1 2 4 2 1]
+    // run the horizontal 1x5 convolution [1 2 4 2 1]
     for (int i = 0; i < src.rows; i++) {
         cv::Vec3b *sptr = src.ptr<cv::Vec3b>(i);
         cv::Vec3b *tptr = tmp.ptr<cv::Vec3b>(i);
@@ -144,7 +144,7 @@ int blur5x5_2(cv::Mat &src, cv::Mat &dst) {
     // allocate and initialize dst
     tmp.copyTo(dst);
 
-    // run the vertical 3 x 1 convolution [1 2 4 2 1]^t
+    // run the vertical 5x1 convolution [1 2 4 2 1]^t
     for (int i = 2; i < src.rows - 2; i++) {
         cv::Vec3b *tptrm2 = tmp.ptr<cv::Vec3b>(i - 2);
         cv::Vec3b *tptrm1 = tmp.ptr<cv::Vec3b>(i - 1);
@@ -197,5 +197,63 @@ int sepia(cv::Mat &src, cv::Mat &dst) {
     }
     tmp.copyTo(dst);
 
+    return 0;
+}
+
+/*
+    Applies a 3x3 sobel filter to a src and outputs it in dst by using separable
+   1x3 filters where x is positive right:
+
+   -1 0 1
+
+   1
+   2
+   1
+
+   -1 0 1
+   -2 0 2
+   -1 0 1
+
+    @param src source image
+    @param dst destination image
+    @return error code, 0 on success, -1 on failure
+*/
+int sobelX3x3(cv::Mat &src, cv::Mat &dst) {
+    cv::Mat tmp;
+    tmp.create(src.rows, src.cols, CV_16SC3);
+    dst.create(src.rows, src.cols, CV_16SC3);
+
+    // run the horizontal 1x3 convolution [-1 0 1]
+    for (int i = 0; i < src.rows; i++) {
+        cv::Vec3b *sptr = src.ptr<cv::Vec3b>(i);
+        cv::Vec3s *tptr = tmp.ptr<cv::Vec3s>(i);
+        for (int j = 1; j < src.cols - 1; j++) {
+            for (int k = 0; k < 3; k++) {
+                tptr[j][k] = (sptr[j - 1][k] * -1) + (sptr[j][k] * 0) +
+                             (sptr[j + 1][k] * 1);
+            }
+        }
+    }
+
+    // run the vertical 3x1 convolution [1 2 1]^t
+    for (int i = 1; i < src.rows - 1; i++) {
+        cv::Vec3s *tptrm1 = tmp.ptr<cv::Vec3s>(i - 1);
+        cv::Vec3s *tptr = tmp.ptr<cv::Vec3s>(i);
+        cv::Vec3s *tptrp1 = tmp.ptr<cv::Vec3s>(i + 1);
+        cv::Vec3s *dptr = dst.ptr<cv::Vec3s>(i);
+        for (int j = 0; j < src.cols; j++) {
+            for (int k = 0; k < 3; k++) {
+                dptr[j][k] = ((tptrm1[j][k] * 1) + (tptr[j][k] * 2) +
+                              (tptrp1[j][k] * 1)) /
+                             4;
+            }
+        }
+    }
+
+    return 0;
+}
+
+int sobelY3x3(cv::Mat &src, cv::Mat &dst) {
+    int i = 0;
     return 0;
 }

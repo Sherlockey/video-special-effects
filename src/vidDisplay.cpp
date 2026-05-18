@@ -16,6 +16,8 @@ enum DisplayMode {
     kBlur5x5_1,
     kBlur5x5_2,
     kSepia,
+    kSobelX3x3,
+    kSobelY3x3,
 };
 
 std::ostream &operator<<(std::ostream &os, DisplayMode d) {
@@ -32,6 +34,10 @@ std::ostream &operator<<(std::ostream &os, DisplayMode d) {
         return os << "Blur 5x5 2";
     case DisplayMode::kSepia:
         return os << "Sepia";
+    case DisplayMode::kSobelX3x3:
+        return os << "Sobel X 3x3";
+    case DisplayMode::kSobelY3x3:
+        return os << "Sobel Y 3x3";
     default:
         return os << "Undefined";
     }
@@ -122,6 +128,25 @@ int main(int argc, char *argv[]) {
             cv::imshow("Video", sepia_frame);
             break;
         }
+        case kSobelX3x3: {
+            cv::Mat sobel_x_3x3_output;
+            start = std::chrono::high_resolution_clock::now();
+            sobelX3x3(frame, sobel_x_3x3_output);
+            end = std::chrono::high_resolution_clock::now();
+            cv::Mat displayFrame;
+            cv::convertScaleAbs(sobel_x_3x3_output, displayFrame);
+            cv::imshow("Video", displayFrame);
+            break;
+        }
+        case kSobelY3x3: {
+            cv::Mat sobel_y_3x3_frame;
+            start = std::chrono::high_resolution_clock::now();
+            sobelY3x3(frame, sobel_y_3x3_frame);
+            end = std::chrono::high_resolution_clock::now();
+
+            cv::imshow("Video", sobel_y_3x3_frame);
+            break;
+        }
         }
         std::chrono::duration<double, std::milli> elapsed = end - start;
         if (displayMode != kOriginal) {
@@ -158,14 +183,14 @@ int main(int argc, char *argv[]) {
                 displayMode = kAltGreyscale;
             }
         }
-        if (key == '1') { // blur5x5_1 (slow, using at<> method)
+        if (key == '1') { // blur 5x5 1 (slow, using at<> method)
             if (displayMode == kBlur5x5_1) {
                 displayMode = kOriginal;
             } else {
                 displayMode = kBlur5x5_1;
             }
         }
-        if (key == '2') { // blur5x5_2 (fast, using ptr method and separable)
+        if (key == '2') { // blur 5x5 2 (fast, using ptr method and separable)
             if (displayMode == kBlur5x5_2) {
                 displayMode = kOriginal;
             } else {
@@ -177,6 +202,20 @@ int main(int argc, char *argv[]) {
                 displayMode = kOriginal;
             } else {
                 displayMode = kSepia;
+            }
+        }
+        if (key == 'x') { // sobel X 3x3
+            if (displayMode == kSobelX3x3) {
+                displayMode = kOriginal;
+            } else {
+                displayMode = kSobelX3x3;
+            }
+        }
+        if (key == 'y') { // sobel Y 3x3
+            if (displayMode == kSobelY3x3) {
+                displayMode = kOriginal;
+            } else {
+                displayMode = kSobelY3x3;
             }
         }
     }
