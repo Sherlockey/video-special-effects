@@ -249,7 +249,6 @@ int sobelX3x3(cv::Mat &src, cv::Mat &dst) {
             }
         }
     }
-
     return 0;
 }
 
@@ -302,6 +301,39 @@ int sobelY3x3(cv::Mat &src, cv::Mat &dst) {
             }
         }
     }
+    return 0;
+}
 
+/*
+    Generates a gradient magnitude image from x and y Sobel images where:
+    I = sqrt(sx*sx + sy*sy)
+
+    @param sx sobelx source image
+    @param sy sobely source image
+    @param dst destination image
+    @return error code, 0 on success, -1 on failure
+*/
+int magnitude(cv::Mat &sx, cv::Mat &sy, cv::Mat &dst) {
+    if (sx.rows != sy.rows || sx.cols != sy.cols) {
+        return -1;
+    }
+
+    dst.create(sx.rows, sx.cols, CV_8UC3);
+    cv::Mat tmp;
+    tmp.create(sx.rows, sx.cols, CV_16SC3);
+
+    for (int i = 0; i < sx.rows; i++) {
+        cv::Vec3s *sxptr = sx.ptr<cv::Vec3s>(i);
+        cv::Vec3s *syptr = sy.ptr<cv::Vec3s>(i);
+        cv::Vec3s *tptr = tmp.ptr<cv::Vec3s>(i);
+        for (int j = 0; j < sx.cols; j++) {
+            for (int k = 0; k < 3; k++) {
+                int mag = std::sqrt((int)sxptr[j][k] * sxptr[j][k] +
+                                    (int)syptr[j][k] * syptr[j][k]);
+                tptr[j][k] = mag;
+            }
+        }
+    }
+    cv::convertScaleAbs(tmp, dst);
     return 0;
 }

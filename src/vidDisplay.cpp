@@ -18,6 +18,7 @@ enum DisplayMode {
     kSepia,
     kSobelX3x3,
     kSobelY3x3,
+    kGradientMagnitude,
 };
 
 std::ostream &operator<<(std::ostream &os, DisplayMode d) {
@@ -38,6 +39,8 @@ std::ostream &operator<<(std::ostream &os, DisplayMode d) {
         return os << "Sobel X 3x3";
     case DisplayMode::kSobelY3x3:
         return os << "Sobel Y 3x3";
+    case DisplayMode::kGradientMagnitude:
+        return os << "Gradient Magnitude";
     default:
         return os << "Undefined";
     }
@@ -88,7 +91,7 @@ int main(int argc, char *argv[]) {
             cv::imshow("Video", frame);
             break;
         }
-        case kGreyscale: {
+        case DisplayMode::kGreyscale: {
             cv::Mat greyscale_frame;
             start = std::chrono::high_resolution_clock::now();
             cv::cvtColor(frame, greyscale_frame, cv::COLOR_BGR2GRAY);
@@ -96,7 +99,7 @@ int main(int argc, char *argv[]) {
             cv::imshow("Video", greyscale_frame);
             break;
         }
-        case kAltGreyscale: {
+        case DisplayMode::kAltGreyscale: {
             cv::Mat alt_greyscale_frame;
             start = std::chrono::high_resolution_clock::now();
             greyscale(frame, alt_greyscale_frame);
@@ -104,7 +107,7 @@ int main(int argc, char *argv[]) {
             cv::imshow("Video", alt_greyscale_frame);
             break;
         }
-        case kBlur5x5_1: {
+        case DisplayMode::kBlur5x5_1: {
             cv::Mat blur_5x5_1_frame;
             start = std::chrono::high_resolution_clock::now();
             blur5x5_1(frame, blur_5x5_1_frame);
@@ -112,7 +115,7 @@ int main(int argc, char *argv[]) {
             cv::imshow("Video", blur_5x5_1_frame);
             break;
         }
-        case kBlur5x5_2: {
+        case DisplayMode::kBlur5x5_2: {
             cv::Mat blur_5x5_2_frame;
             start = std::chrono::high_resolution_clock::now();
             blur5x5_2(frame, blur_5x5_2_frame);
@@ -120,7 +123,7 @@ int main(int argc, char *argv[]) {
             cv::imshow("Video", blur_5x5_2_frame);
             break;
         }
-        case kSepia: {
+        case DisplayMode::kSepia: {
             cv::Mat sepia_frame;
             start = std::chrono::high_resolution_clock::now();
             sepia(frame, sepia_frame);
@@ -128,26 +131,42 @@ int main(int argc, char *argv[]) {
             cv::imshow("Video", sepia_frame);
             break;
         }
-        case kSobelX3x3: {
+        case DisplayMode::kSobelX3x3: {
             cv::Mat sobel_x_3x3_output;
             start = std::chrono::high_resolution_clock::now();
             sobelX3x3(frame, sobel_x_3x3_output);
             end = std::chrono::high_resolution_clock::now();
 
-            cv::Mat displayFrame;
-            cv::convertScaleAbs(sobel_x_3x3_output, displayFrame);
-            cv::imshow("Video", displayFrame);
+            cv::Mat display_frame;
+            cv::convertScaleAbs(sobel_x_3x3_output, display_frame);
+            cv::imshow("Video", display_frame);
             break;
         }
-        case kSobelY3x3: {
+        case DisplayMode::kSobelY3x3: {
             cv::Mat sobel_y_3x3_output;
             start = std::chrono::high_resolution_clock::now();
             sobelY3x3(frame, sobel_y_3x3_output);
             end = std::chrono::high_resolution_clock::now();
 
-            cv::Mat displayFrame;
-            cv::convertScaleAbs(sobel_y_3x3_output, displayFrame);
-            cv::imshow("Video", displayFrame);
+            cv::Mat display_frame;
+            cv::convertScaleAbs(sobel_y_3x3_output, display_frame);
+            cv::imshow("Video", display_frame);
+            break;
+        }
+        case DisplayMode::kGradientMagnitude: {
+            cv::Mat sobel_x_3x3_output;
+            cv::Mat sobel_y_3x3_output;
+            cv::Mat gradient_magnitude_frame;
+
+            start = std::chrono::high_resolution_clock::now();
+            sobelX3x3(frame, sobel_x_3x3_output);
+            sobelY3x3(frame, sobel_y_3x3_output);
+            magnitude(sobel_x_3x3_output, sobel_y_3x3_output,
+                      gradient_magnitude_frame);
+            end = std::chrono::high_resolution_clock::now();
+
+            cv::imshow("Video", gradient_magnitude_frame);
+            break;
         }
         }
         std::chrono::duration<double, std::milli> elapsed = end - start;
@@ -218,6 +237,13 @@ int main(int argc, char *argv[]) {
                 displayMode = kOriginal;
             } else {
                 displayMode = kSobelY3x3;
+            }
+        }
+        if (key == 'm') { // gradient magnitude
+            if (displayMode == kGradientMagnitude) {
+                displayMode = kOriginal;
+            } else {
+                displayMode = kGradientMagnitude;
             }
         }
     }
