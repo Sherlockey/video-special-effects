@@ -1,7 +1,7 @@
 /*
     Jonathon Davis
     2026-05-17
-    TODO Purpose of file
+    Filters to be used with OpenCV cv::Mat data structures to modify the src.
 */
 
 #include <opencv2/opencv.hpp>
@@ -13,14 +13,47 @@
     @param dst destination image
     @return error code, 0 on success, -1 on failure
 */
+
 int greyscale(cv::Mat &src, cv::Mat &dst) {
-    src.copyTo(dst);
+    // src.copyTo(dst);
+    if (dst.empty()) {
+        dst.create(src.rows, src.cols, CV_8UC1);
+    }
+
+    for (int i = 0; i < src.rows; i++) {
+        cv::Vec3b *srcptr = src.ptr<cv::Vec3b>(i);
+        cv::Vec<uchar, 1> *dstptr = dst.ptr<cv::Vec<uchar, 1>>(i);
+        for (int j = 0; j < src.cols; j++) {
+            short b = srcptr[j][0];
+            short g = srcptr[j][1];
+            short r = srcptr[j][2];
+
+            // average method for greyscale
+            // uchar y = (b + g + r) / 3;
+
+            // lightness method for greyscale
+            short max = std::max({b, g, r});
+            short min = std::min({b, g, r});
+            uchar y = (max + min) / 2;
+
+            // max only method for greyscale
+            // short max = std::max({b, g, r});
+            // uchar y = max;
+
+            // min only method for greyscale
+            // short min = std::min({b, g, r});
+            // uchar y = min;
+
+            dstptr[j] = y;
+        }
+    }
+
     return 0;
 }
 
 /*
-    Implement a 5x5 blur filter using at<> method using
-    integer approximation of Gaussian:
+    Implement a 5x5 blur filter using at<> method using integer approximation of
+   Gaussian:
 
     1  2  4  2  1
     2  4  8  4  2
@@ -78,70 +111,6 @@ int blur5x5_1(cv::Mat &src, cv::Mat &dst) {
     }
     return 0;
 }
-
-/*
-    Implement a 5x5 blur filter using ptr method using
-    integer approximation of Gaussian:
-
-    1  2  4  2  1
-    2  4  8  4  2
-    4  8  16 8  4
-    2  4  8  4  2
-    1  2  4  2  1
-
-    @param src source image
-    @param dst destination image
-    @return error code, 0 on success, -1 on failure
-*/
-// int blur5x5_2(cv::Mat &src, cv::Mat &dst) {
-//     // valid convolution
-//     // leave outer row/col as the original image
-//     // allocates and copies the data to dst
-//     src.copyTo(dst);
-
-//     for (int i = 2; i < src.rows - 2; i++) {
-//         // set up the pointers necessary for row i
-//         // src row pointers
-//         cv::Vec3b *sptrm2 = src.ptr<cv::Vec3b>(i - 2);
-//         cv::Vec3b *sptrm1 = src.ptr<cv::Vec3b>(i - 1);
-//         cv::Vec3b *sptr = src.ptr<cv::Vec3b>(i);
-//         cv::Vec3b *sptrp1 = src.ptr<cv::Vec3b>(i + 1);
-//         cv::Vec3b *sptrp2 = src.ptr<cv::Vec3b>(i + 2);
-
-//         // destination image ptr
-//         cv::Vec3b *dptr = dst.ptr<cv::Vec3b>(i);
-
-//         for (int j = 2; j < src.cols - 2; j++) {
-//             for (int k = 0; k < 3; k++) {
-//                 // TODO make this a loop?
-//                 dptr[j][k] = ((sptrm2[j - 2][k] * 1) + (sptrm2[j - 1][k] * 2)
-//                 +
-//                               (sptrm2[j][k] * 4) + (sptrm2[j + 1][k] * 2) +
-//                               (sptrm2[j + 2][k] * 1) +
-
-//                               (sptrm1[j - 2][k] * 2) + (sptrm1[j - 1][k] * 4)
-//                               + (sptrm1[j][k] * 8) + (sptrm1[j + 1][k] * 4) +
-//                               (sptrm1[j + 2][k] * 2) +
-
-//                               (sptr[j - 2][k] * 4) + (sptr[j - 1][k] * 8) +
-//                               (sptr[j][k] * 16) + (sptr[j + 1][k] * 8) +
-//                               (sptr[j + 2][k] * 4) +
-
-//                               (sptrp1[j - 2][k] * 2) + (sptrp1[j - 1][k] * 4)
-//                               + (sptrp1[j][k] * 8) + (sptrp1[j + 1][k] * 4) +
-//                               (sptrp1[j + 2][k] * 2) +
-
-//                               (sptrp2[j - 2][k] * 1) + (sptrp2[j - 1][k] * 2)
-//                               + (sptrp2[j][k] * 4) + (sptrp2[j + 1][k] * 2) +
-//                               (sptrp2[j + 2][k] * 1)) /
-//                              100; // TODO the image is getting darker right
-//                              now
-//                                   // which is wrong
-//             }
-//         }
-//     }
-//     return 0;
-// }
 
 /*
     Implement a 5x5 blur filter using separable 1x5 filters (vertical and

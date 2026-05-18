@@ -1,7 +1,8 @@
 /*
     Jonathon Davis
     2026-05-15
-    TODO Purpose of the file
+    Opens a video channel, creates a window, then loops capturing a new frame
+   and displaying it each time through the loop.
 */
 
 #include "filter.cpp"
@@ -10,7 +11,7 @@
 enum DisplayType {
     kOriginal,
     kGreyscale,
-    kAlt_greyscale,
+    kAltGreyscale,
     kBlur5x5_1,
     kBlur5x5_2,
 };
@@ -64,7 +65,7 @@ int main(int argc, char *argv[]) {
             cv::imshow("Video", greyscale_frame);
             break;
         }
-        case kAlt_greyscale: {
+        case kAltGreyscale: {
             cv::Mat alt_greyscale_frame;
             greyscale(frame, alt_greyscale_frame);
             cv::imshow("Video", alt_greyscale_frame);
@@ -108,10 +109,10 @@ int main(int argc, char *argv[]) {
             }
         }
         if (key == 'h') { // alternative greyscale
-            if (displayType == kAlt_greyscale) {
+            if (displayType == kAltGreyscale) {
                 displayType = kOriginal;
             } else {
-                displayType = kAlt_greyscale;
+                displayType = kAltGreyscale;
             }
         }
         if (key == '1') { // blur5x5_1 (slow, using at<> method)
