@@ -18,7 +18,7 @@
 */
 
 int greyscale(cv::Mat &src, cv::Mat &dst) {
-    if (dst.size() != src.size()) {
+    if (dst.size() != src.size() || dst.type() != CV_8UC1) {
         dst.create(src.rows, src.cols, CV_8UC1);
     }
 
@@ -83,8 +83,8 @@ int blur5x5_1(cv::Mat &src, cv::Mat &dst) {
                      src.at<cv::Vec3b>(i - 2, j + 1)[k] * 2 +
                      src.at<cv::Vec3b>(i - 2, j + 2)[k] * 1 +
 
-                     src.at<cv::Vec3b>(i - 1, j - 1)[k] * 2 +
-                     src.at<cv::Vec3b>(i - 1, j - 2)[k] * 4 +
+                     src.at<cv::Vec3b>(i - 1, j - 2)[k] * 2 +
+                     src.at<cv::Vec3b>(i - 1, j - 1)[k] * 4 +
                      src.at<cv::Vec3b>(i - 1, j)[k] * 8 +
                      src.at<cv::Vec3b>(i - 1, j + 1)[k] * 4 +
                      src.at<cv::Vec3b>(i - 1, j + 2)[k] * 2 +
@@ -175,12 +175,11 @@ int blur5x5_2(cv::Mat &src, cv::Mat &dst) {
     @return error code, 0 on success, -1 on failure
 */
 int sepia(cv::Mat &src, cv::Mat &dst) {
-    cv::Mat tmp;
-    tmp.create(src.rows, src.cols, src.type());
+    dst.create(src.rows, src.cols, src.type());
 
     for (int i = 0; i < src.rows; i++) {
         cv::Vec3b *srcptr = src.ptr<cv::Vec3b>(i);
-        cv::Vec3b *tmpptr = tmp.ptr<cv::Vec3b>(i);
+        cv::Vec3b *tmpptr = dst.ptr<cv::Vec3b>(i);
         for (int j = 0; j < src.cols; j++) {
             int blue = srcptr[j][2] * 0.272f + srcptr[j][1] * 0.534f +
                        srcptr[j][0] * 0.131f;
@@ -197,7 +196,6 @@ int sepia(cv::Mat &src, cv::Mat &dst) {
             tmpptr[j] = cv::Vec3b(blue, green, red);
         }
     }
-    tmp.copyTo(dst);
 
     return 0;
 }
@@ -221,7 +219,7 @@ int sepia(cv::Mat &src, cv::Mat &dst) {
     @return error code, 0 on success, -1 on failure
 */
 int sobelX3x3(cv::Mat &src, cv::Mat &dst) {
-    cv::Mat tmp;
+    static cv::Mat tmp;
     tmp.create(src.rows, src.cols, CV_16SC3);
     dst.create(src.rows, src.cols, CV_16SC3);
 
@@ -273,7 +271,7 @@ int sobelX3x3(cv::Mat &src, cv::Mat &dst) {
     @return error code, 0 on success, -1 on failure
 */
 int sobelY3x3(cv::Mat &src, cv::Mat &dst) {
-    cv::Mat tmp;
+    static cv::Mat tmp;
     tmp.create(src.rows, src.cols, CV_16SC3);
     dst.create(src.rows, src.cols, CV_16SC3);
 
@@ -361,7 +359,7 @@ int blurQuantize(cv::Mat &src, cv::Mat &dst, int levels) {
         for (int j = 0; j < dst.cols; j++) {
             for (int k = 0; k < 3; k++) {
                 int x = dptr[j][k];
-                int b = 255.0 / levels;
+                float b = 255.0f / (levels - 1);
                 int xt = x / b;
                 int xf = xt * b;
                 dptr[j][k] = xf;
@@ -372,7 +370,7 @@ int blurQuantize(cv::Mat &src, cv::Mat &dst, int levels) {
 }
 
 /*
-    Game Boy quantization to four shades of green
+    Game Boy style quantization to four shades of green
 
     #071821 hex, 15, 56, 15 BGR -- darkest green,
     #306850 hex, 48, 98, 48 BGR -- dark green,
@@ -445,12 +443,11 @@ int emboss(cv::Mat &src, cv::Mat &dst) {
     @param src source image
     @param dst destination image
     @param size to divide width and height by when downsampling
+    @return error code, 0 on success, -1 on failure
  */
 int pixelate(cv::Mat &src, cv::Mat &dst, int size) {
-    if (size < 1)
+    if (size < 1) {
         return -1;
-    if (dst.empty()) {
-        dst.create(src.rows, src.cols, src.type());
     }
 
     // downsample with linear then upsample with nearest-neighbor
@@ -469,6 +466,7 @@ int pixelate(cv::Mat &src, cv::Mat &dst, int size) {
     @param src source image
     @param dst destination image
     @param size to divide width and height by when downsampling (in pixelate)
+    @return error code, 0 on success, -1 on failure
 */
 int censorFace(cv::Mat &src, cv::Mat &dst, int size) {
     std::vector<cv::Rect> faces;
@@ -480,7 +478,7 @@ int censorFace(cv::Mat &src, cv::Mat &dst, int size) {
     // only pixelate what is inside faces
     for (const auto &f : faces) {
         // clamp the rect to frame bounds in case the face is at the edge
-        cv::Rect safe = f & cv::Rect(0, 0, dst.cols, src.rows);
+        cv::Rect safe = f & cv::Rect(0, 0, dst.cols, dst.rows);
         if (safe.area() == 0)
             continue;
 
@@ -492,4 +490,56 @@ int censorFace(cv::Mat &src, cv::Mat &dst, int size) {
     return 0;
 }
 
-// Extension: CRT Filter
+/*
+    Applies a CRT filter to the image via: scanlines, BGR subpixel pattern, and
+   vignette
+
+    @param src source image
+    @param dst destination image
+    @return error code, 0 on success, -1 on failure
+*/
+int crt(cv::Mat &src, cv::Mat &dst) {
+    dst.create(src.rows, src.cols, src.type());
+
+    float scanline_strength = 0.35f; // 0 = no scanlines, 1 = full black
+    float subpixel_strength = 0.95f; // 0 = no RGB stripes, 1 = full mask
+    float vignette_strength = 0.65f; // 0 = no vignette, 1 = corners fully black
+    float brightness_boost = 1.50f;
+
+    // vignette geometry
+    float vx = src.cols * 0.5f;
+    float vy = src.rows * 0.5f;
+    float max_dist2 = vx * vx + vy * vy;
+
+    for (int i = 0; i < src.rows; i++) {
+        cv::Vec3b *sptr = src.ptr<cv::Vec3b>(i);
+        cv::Vec3b *dptr = dst.ptr<cv::Vec3b>(i);
+
+        float scan_factor = (i % 2 == 0) ? 1.0f : (1.0f - scanline_strength);
+
+        for (int j = 0; j < src.cols; j++) {
+            // subpixel mask where each col emphasizes one of B, G, R in order
+            float mask[3] = {1.0f, 1.0f, 1.0f};
+            int col_mod3 = j % 3;
+            for (int k = 0; k < 3; k++) {
+                if (k != col_mod3) {
+                    mask[k] = 1.0f - subpixel_strength;
+                }
+            }
+
+            // vignette factor
+            float dx = j - vx;
+            float dy = i - vy;
+            float v =
+                1.0f - vignette_strength * ((dx * dx + dy * dy) / max_dist2);
+
+            // apply all
+            float combined = scan_factor * v * brightness_boost;
+            for (int k = 0; k < 3; k++) {
+                float val = sptr[j][k] * combined * mask[k];
+                dptr[j][k] = (uchar)std::clamp((int)val, 0, 255);
+            }
+        }
+    }
+    return 0;
+}

@@ -25,5 +25,6 @@ int gameBoy(cv::Mat &src, cv::Mat &dst);
 int emboss(cv::Mat &src, cv::Mat &dst);
 int pixelate(cv::Mat &src, cv::Mat &dst, int size);
 int censorFace(cv::Mat &src, cv::Mat &dst, int size);
+int crt(cv::Mat &src, cv::Mat &dst);
 
 #endif // FILTER_H
