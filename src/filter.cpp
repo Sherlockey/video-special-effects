@@ -4,6 +4,7 @@
     Filters to be used with OpenCV cv::Mat data structures to modify the src.
 */
 
+#include "../include/filter.h"
 #include <opencv2/opencv.hpp>
 
 /*

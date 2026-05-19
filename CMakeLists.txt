@@ -12,9 +12,16 @@ add_custom_target(copy_compile_commands ALL
 
 find_package(OpenCV REQUIRED)
 
-add_executable(vidDisplay ./src/vidDisplay.cpp)
+add_executable(vidDisplay
+    ./src/vidDisplay.cpp
+    ./src/filter.cpp
+    ./include/faceDetect.cpp
+)
 target_link_libraries(vidDisplay PRIVATE ${OpenCV_LIBS})
-target_include_directories(vidDisplay PRIVATE ${OpenCV_INCLUDE_DIRS})
+target_include_directories(vidDisplay PRIVATE
+    ${OpenCV_INCLUDE_DIRS}
+    ./include
+)
 
 add_executable(imgDisplay ./src/imgDisplay.cpp)
 target_link_libraries(imgDisplay PRIVATE ${OpenCV_LIBS})

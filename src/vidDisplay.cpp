@@ -5,7 +5,8 @@
    and displaying it in the current DisplayMode. Also displays frame timing.
 */
 
-#include "filter.cpp"
+#include "../include/faceDetect.h"
+#include "../include/filter.h"
 #include <chrono>
 #include <opencv2/opencv.hpp>
 
@@ -20,6 +21,7 @@ enum DisplayMode {
     kSobelY3x3,
     kGradientMagnitude,
     kBlurQuantize,
+    kFaceDetect,
 };
 
 std::ostream &operator<<(std::ostream &os, DisplayMode d) {
@@ -44,6 +46,8 @@ std::ostream &operator<<(std::ostream &os, DisplayMode d) {
         return os << "Gradient Magnitude";
     case DisplayMode::kBlurQuantize:
         return os << "Blur Quantize";
+    case DisplayMode::kFaceDetect:
+        return os << "Face Detect";
     default:
         return os << "Undefined";
     }
@@ -179,6 +183,29 @@ int main(int argc, char *argv[]) {
             cv::imshow("Video", blur_quantize_frame);
             break;
         }
+        case DisplayMode::kFaceDetect: {
+            start = std::chrono::high_resolution_clock::now();
+
+            std::vector<cv::Rect> faces;
+            cv::Mat grey;
+            cv::cvtColor(frame, grey, cv::COLOR_BGR2GRAY, 0);
+            detectFaces(grey, faces);
+
+            drawBoxes(frame, faces);
+
+            // add a little smoothing by averaging the last two detections
+            cv::Rect last(0, 0, 0, 0);
+            if (faces.size() > 0) {
+                last.x = (faces[0].x + last.x) / 2;
+                last.y = (faces[0].y + last.y) / 2;
+                last.width = (faces[0].width + last.width) / 2;
+                last.height = (faces[0].height + last.height) / 2;
+            }
+
+            end = std::chrono::high_resolution_clock::now();
+            cv::imshow("Video", frame);
+            break;
+        }
         }
         std::chrono::duration<double, std::milli> elapsed = end - start;
         if (displayMode != kOriginal) {
@@ -262,6 +289,13 @@ int main(int argc, char *argv[]) {
                 displayMode = kOriginal;
             } else {
                 displayMode = kBlurQuantize;
+            }
+        }
+        if (key == 'f') { // face detect
+            if (displayMode == kFaceDetect) {
+                displayMode = kOriginal;
+            } else {
+                displayMode = kFaceDetect;
             }
         }
     }
