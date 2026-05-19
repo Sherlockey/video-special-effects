@@ -7,9 +7,8 @@
 */
 
 #include "DA2Network.hpp"
-#include <cmath>
+#include "filter.h"
 #include <cstdio>
-#include <cstring>
 #include <opencv2/opencv.hpp>
 
 // opens a video stream and runs it through the depth anything network
@@ -64,15 +63,21 @@ int main(int argc, char *argv[]) {
 
         // if you want to modify the src image based on the depth image, do that
         // here
-        /*
-        for(int i=0;i<src.rows;i++) {
-          for(int j=0;j<src.cols;j++) {
-        if( dst.at<unsigned char>(i, j) < 128 ) {
-          src.at<cv::Vec3b>(i,j) = cv::Vec3b( 128, 100, 140 );
+        int threshold = 128;
+        for (int i = 0; i < src.rows; i++) {
+            cv::Vec3b *sptr = src.ptr<cv::Vec3b>(i);
+            uchar *dptr = dst.ptr<uchar>(i);
+            for (int j = 0; j < src.cols; j++) {
+                int depth = dptr[j];
+                if (depth < threshold) {
+                    float factor = (float)depth / threshold;
+                    factor *= factor; // for squared falloff
+                    for (int k = 0; k < 3; k++) {
+                        sptr[j][k] = (uchar)(sptr[j][k] * factor);
+                    }
+                }
+            }
         }
-          }
-        }
-        */
 
         // display the images
         cv::imshow("video", src);

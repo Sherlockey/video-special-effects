@@ -207,12 +207,13 @@ int main(int argc, char *argv[]) {
             break;
         }
         }
+        // print duration if applicable
         std::chrono::duration<double, std::milli> elapsed = end - start;
         if (displayMode != kOriginal) {
             std::cout << displayMode << " took " << elapsed.count() << " ms\n";
         }
 
-        // see if there is a waiting keystroke
+        // see if there is a waiting keystroke, if so react accordingly
         char key = cv::waitKey(10);
         if (key == 'q') { // quit
             break;

@@ -1,5 +1,5 @@
 clean:
-rm -r -fo bin
+rm -r bin
 
 init:
 cmake -B bin -G Ninja -DCMAKE_TOOLCHAIN_FILE=C:/dev/vcpkg/scripts/buildsystems/vcpkg.cmake
