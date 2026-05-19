@@ -75,7 +75,6 @@ int blur5x5_1(cv::Mat &src, cv::Mat &dst) {
     for (int i = 2; i < src.rows - 2; i++) {
         for (int j = 2; j < src.cols - 2; j++) {
             for (int k = 0; k < 3; k++) {
-                // TODO make this a loop?
                 dst.at<cv::Vec3b>(i, j)[k] =
                     (src.at<cv::Vec3b>(i - 2, j - 2)[k] * 1 +
                      src.at<cv::Vec3b>(i - 2, j - 1)[k] * 2 +
@@ -407,13 +406,37 @@ int gameBoy(cv::Mat &src, cv::Mat &dst) {
     return 0;
 }
 
-// area computation like sobel or blur filter
 /*
-    "Censoring" filter
-    -1 -1 -1
-    -1 -4 -1
-    -1 -1 -1
+    3x3 Emboss filter
+    -1 -1  0
+    -1  0  1
+     0  1  1
+
+    @param src source image
+    @param dst destination image
+    @return error code, 0 on success, -1 on failure
 */
+int emboss(cv::Mat &src, cv::Mat &dst) {
+    src.copyTo(dst);
+
+    for (int i = 1; i < src.rows - 1; i++) {
+        cv::Vec3b *rm1 = src.ptr<cv::Vec3b>(i - 1);
+        cv::Vec3b *r0 = src.ptr<cv::Vec3b>(i);
+        cv::Vec3b *rp1 = src.ptr<cv::Vec3b>(i + 1);
+        cv::Vec3b *dp = dst.ptr<cv::Vec3b>(i);
+        for (int j = 1; j < src.cols - 1; j++) {
+            for (int k = 0; k < 3; k++) {
+                int sum = rm1[j - 1][k] * -1 + rm1[j][k] * -1 +
+                          rm1[j + 1][k] * 0 + r0[j - 1][k] * -1 + r0[j][k] * 0 +
+                          r0[j + 1][k] * 1 + rp1[j - 1][k] * 0 + rp1[j][k] * 1 +
+                          rp1[j + 1][k] * 1;
+                sum += 128;
+                dp[j][k] = (uchar)std::clamp(sum, 0, 255);
+            }
+        }
+    }
+    return 0;
+}
 
 // face detector
 /*

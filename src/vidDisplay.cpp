@@ -23,6 +23,7 @@ enum DisplayMode {
     kBlurQuantize,
     kFaceDetect,
     kGameBoy,
+    kEmboss,
 };
 
 std::ostream &operator<<(std::ostream &os, DisplayMode d) {
@@ -51,6 +52,8 @@ std::ostream &operator<<(std::ostream &os, DisplayMode d) {
         return os << "Face Detect";
     case DisplayMode::kGameBoy:
         return os << "Game Boy";
+    case DisplayMode::kEmboss:
+        return os << "Emboss";
     default:
         return os << "Undefined";
     }
@@ -217,6 +220,14 @@ int main(int argc, char *argv[]) {
             cv::imshow("Video", game_boy_frame);
             break;
         }
+        case DisplayMode::kEmboss: {
+            start = std::chrono::high_resolution_clock::now();
+            cv::Mat emboss_frame;
+            emboss(frame, emboss_frame);
+            end = std::chrono::high_resolution_clock::now();
+            cv::imshow("Video", emboss_frame);
+            break;
+        }
         }
         // print duration if applicable
         std::chrono::duration<double, std::milli> elapsed = end - start;
@@ -315,6 +326,13 @@ int main(int argc, char *argv[]) {
                 displayMode = kOriginal;
             } else {
                 displayMode = kGameBoy;
+            }
+        }
+        if (key == 'e') { // emboss
+            if (displayMode == kEmboss) {
+                displayMode = kOriginal;
+            } else {
+                displayMode = kEmboss;
             }
         }
     }
