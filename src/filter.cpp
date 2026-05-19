@@ -16,7 +16,6 @@
     @param dst destination image
     @return error code, 0 on success, -1 on failure
 */
-
 int greyscale(cv::Mat &src, cv::Mat &dst) {
     cv::Mat tmp;
     tmp.create(src.rows, src.cols, CV_8UC1);
