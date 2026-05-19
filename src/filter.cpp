@@ -337,3 +337,26 @@ int magnitude(cv::Mat &sx, cv::Mat &sy, cv::Mat &dst) {
     cv::convertScaleAbs(tmp, dst);
     return 0;
 }
+
+int blurQuantize(cv::Mat &src, cv::Mat &dst, int levels) {
+    if (levels == 0) {
+        return -1;
+    }
+    dst.create(src.rows, src.cols, src.type());
+
+    blur5x5_2(src, dst);
+
+    for (int i = 0; i < dst.rows; i++) {
+        cv::Vec3b *dptr = dst.ptr<cv::Vec3b>(i);
+        for (int j = 0; j < dst.cols; j++) {
+            for (int k = 0; k < 3; k++) {
+                int x = dptr[j][k];
+                int b = 255.0 / levels;
+                int xt = x / b;
+                int xf = xt * b;
+                dptr[j][k] = xf;
+            }
+        }
+    }
+    return 0;
+}

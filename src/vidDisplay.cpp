@@ -19,6 +19,7 @@ enum DisplayMode {
     kSobelX3x3,
     kSobelY3x3,
     kGradientMagnitude,
+    kBlurQuantize,
 };
 
 std::ostream &operator<<(std::ostream &os, DisplayMode d) {
@@ -41,6 +42,8 @@ std::ostream &operator<<(std::ostream &os, DisplayMode d) {
         return os << "Sobel Y 3x3";
     case DisplayMode::kGradientMagnitude:
         return os << "Gradient Magnitude";
+    case DisplayMode::kBlurQuantize:
+        return os << "Blur Quantize";
     default:
         return os << "Undefined";
     }
@@ -168,6 +171,14 @@ int main(int argc, char *argv[]) {
             cv::imshow("Video", gradient_magnitude_frame);
             break;
         }
+        case DisplayMode::kBlurQuantize: {
+            cv::Mat blur_quantize_frame;
+            start = std::chrono::high_resolution_clock::now();
+            blurQuantize(frame, blur_quantize_frame, 10);
+            end = std::chrono::high_resolution_clock::now();
+            cv::imshow("Video", blur_quantize_frame);
+            break;
+        }
         }
         std::chrono::duration<double, std::milli> elapsed = end - start;
         if (displayMode != kOriginal) {
@@ -244,6 +255,13 @@ int main(int argc, char *argv[]) {
                 displayMode = kOriginal;
             } else {
                 displayMode = kGradientMagnitude;
+            }
+        }
+        if (key == 'b') { // blur quantize
+            if (displayMode == kBlurQuantize) {
+                displayMode = kOriginal;
+            } else {
+                displayMode = kBlurQuantize;
             }
         }
     }
