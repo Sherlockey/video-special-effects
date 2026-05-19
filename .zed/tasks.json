@@ -14,4 +14,10 @@
     "command": "./bin/vidDisplay.exe",
     "use_new_terminal": false,
   },
+
+  {
+    "label": "run da2-video",
+    "command": "./bin/da2-video.exe",
+    "use_new_terminal": false,
+  },
 ]
