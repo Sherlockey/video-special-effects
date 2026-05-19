@@ -7,7 +7,6 @@
 */
 
 #include "DA2Network.hpp"
-#include "filter.h"
 #include <cstdio>
 #include <opencv2/opencv.hpp>
 
@@ -68,9 +67,9 @@ int main(int argc, char *argv[]) {
             cv::Vec3b *sptr = src.ptr<cv::Vec3b>(i);
             uchar *dptr = dst.ptr<uchar>(i);
             for (int j = 0; j < src.cols; j++) {
-                int depth = dptr[j];
-                if (depth < threshold) {
-                    float factor = (float)depth / threshold;
+                int x = dptr[j];
+                if (x < threshold) {
+                    float factor = (float)x / threshold;
                     factor *= factor; // for squared falloff
                     for (int k = 0; k < 3; k++) {
                         sptr[j][k] = (uchar)(sptr[j][k] * factor);
@@ -80,8 +79,8 @@ int main(int argc, char *argv[]) {
         }
 
         // display the images
-        cv::imshow("video", src);
-        cv::imshow("depth", dst_vis);
+        cv::imshow("Video", src);
+        cv::imshow("Depth", dst_vis);
 
         // terminate if the user types 'q'
         char key = cv::waitKey(10);

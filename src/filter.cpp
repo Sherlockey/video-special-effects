@@ -5,6 +5,7 @@
 */
 
 #include "filter.h"
+#include <opencv2/core/hal/interface.h>
 #include <opencv2/opencv.hpp>
 
 /*
@@ -22,7 +23,7 @@ int greyscale(cv::Mat &src, cv::Mat &dst) {
 
     for (int i = 0; i < src.rows; i++) {
         cv::Vec3b *srcptr = src.ptr<cv::Vec3b>(i);
-        cv::Vec<uchar, 1> *dstptr = dst.ptr<cv::Vec<uchar, 1>>(i);
+        uchar *dstptr = dst.ptr<uchar>(i);
         for (int j = 0; j < src.cols; j++) {
             short b = srcptr[j][0];
             short g = srcptr[j][1];
@@ -339,6 +340,14 @@ int magnitude(cv::Mat &sx, cv::Mat &sy, cv::Mat &dst) {
     return 0;
 }
 
+/*
+    Blurs, then quantizes an image according to @param levels
+
+    @param src source image
+    @param dst destination image
+    @param levels the levels of quantization, higher = more colors, lower = less
+    @return error code, 0 on success, -1 on failure
+*/
 int blurQuantize(cv::Mat &src, cv::Mat &dst, int levels) {
     if (levels == 0) {
         return -1;
@@ -361,3 +370,54 @@ int blurQuantize(cv::Mat &src, cv::Mat &dst, int levels) {
     }
     return 0;
 }
+
+/*
+    Game Boy quantization to four shades of green
+
+    #071821 hex, 33, 24, 7 BGR -- darkest green,
+    #306850 hex, 48, 104, 80 BGR -- dark green,
+    #86c06c hex, 108, 192, 134 BGR -- light green,
+    #e0f8cf hex, 207, 248, 224 BGR -- lightest green,
+
+    @param src source image
+    @param dst destination image
+    @return error code, 0 on success, -1 on failure
+*/
+int gameBoy(cv::Mat &src, cv::Mat &dst) {
+    cv::Mat tmp;
+    cv::cvtColor(src, tmp, cv::COLOR_BGR2GRAY);
+    dst.create(src.rows, src.cols, src.type());
+
+    for (int i = 0; i < tmp.rows; i++) {
+        uchar *tptr = tmp.ptr<uchar>(i);
+        cv::Vec3b *dptr = dst.ptr<cv::Vec3b>(i);
+        for (int j = 0; j < tmp.cols; j++) {
+            int x = tptr[j];
+            if (x < 64) {
+                dptr[j] = cv::Vec3b(33, 24, 7);
+            } else if (x < 128) {
+                dptr[j] = cv::Vec3b(48, 104, 80);
+            } else if (x < 192) {
+                dptr[j] = cv::Vec3b(108, 192, 134);
+            } else {
+                dptr[j] = cv::Vec3b(207, 248, 224);
+            }
+        }
+    }
+    return 0;
+}
+
+// area computation like sobel or blur filter
+/*
+    "Censoring" filter
+    -1 -1 -1
+    -1 -4 -1
+    -1 -1 -1
+*/
+
+// face detector
+/*
+    Combine face detection with censoring filter
+*/
+
+// Extension: CRT Filter

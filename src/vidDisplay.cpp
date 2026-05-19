@@ -22,6 +22,7 @@ enum DisplayMode {
     kGradientMagnitude,
     kBlurQuantize,
     kFaceDetect,
+    kGameBoy,
 };
 
 std::ostream &operator<<(std::ostream &os, DisplayMode d) {
@@ -48,13 +49,15 @@ std::ostream &operator<<(std::ostream &os, DisplayMode d) {
         return os << "Blur Quantize";
     case DisplayMode::kFaceDetect:
         return os << "Face Detect";
+    case DisplayMode::kGameBoy:
+        return os << "Game Boy";
     default:
         return os << "Undefined";
     }
 }
 
 /*
-    TODO Description of what it does
+    Program entry point
 
     @param argc argument count with how many command line arguments provided
     @param argv argument vector is an array of strings with command line args
@@ -206,6 +209,14 @@ int main(int argc, char *argv[]) {
             cv::imshow("Video", frame);
             break;
         }
+        case DisplayMode::kGameBoy: {
+            start = std::chrono::high_resolution_clock::now();
+            cv::Mat game_boy_frame;
+            gameBoy(frame, game_boy_frame);
+            end = std::chrono::high_resolution_clock::now();
+            cv::imshow("Video", game_boy_frame);
+            break;
+        }
         }
         // print duration if applicable
         std::chrono::duration<double, std::milli> elapsed = end - start;
@@ -297,6 +308,13 @@ int main(int argc, char *argv[]) {
                 displayMode = kOriginal;
             } else {
                 displayMode = kFaceDetect;
+            }
+        }
+        if (key == 'o') { // game boy
+            if (displayMode == kGameBoy) {
+                displayMode = kOriginal;
+            } else {
+                displayMode = kGameBoy;
             }
         }
     }
