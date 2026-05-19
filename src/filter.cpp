@@ -5,6 +5,7 @@
 */
 
 #include "filter.h"
+#include "faceDetect.h"
 #include <opencv2/core/hal/interface.h>
 #include <opencv2/opencv.hpp>
 
@@ -417,7 +418,7 @@ int gameBoy(cv::Mat &src, cv::Mat &dst) {
     @return error code, 0 on success, -1 on failure
 */
 int emboss(cv::Mat &src, cv::Mat &dst) {
-    src.copyTo(dst);
+    dst.create(src.rows, src.cols, src.type());
 
     for (int i = 1; i < src.rows - 1; i++) {
         cv::Vec3b *rm1 = src.ptr<cv::Vec3b>(i - 1);
@@ -438,9 +439,57 @@ int emboss(cv::Mat &src, cv::Mat &dst) {
     return 0;
 }
 
-// face detector
 /*
-    Combine face detection with censoring filter
+    Pixellation filter
+
+    @param src source image
+    @param dst destination image
+    @param size to divide width and height by when downsampling
+ */
+int pixelate(cv::Mat &src, cv::Mat &dst, int size) {
+    if (size < 1)
+        return -1;
+    if (dst.empty()) {
+        dst.create(src.rows, src.cols, src.type());
+    }
+
+    // downsample with linear then upsample with nearest-neighbor
+    cv::Mat small_img;
+    int small_w = std::max(1, src.cols / size);
+    int small_h = std::max(1, src.rows / size);
+    cv::resize(src, small_img, cv::Size(small_w, small_h), 0, 0,
+               cv::INTER_LINEAR);
+    cv::resize(small_img, dst, src.size(), 0, 0, cv::INTER_NEAREST);
+    return 0;
+}
+
+/*
+    Filter using facial recognition to censor someone's face
+
+    @param src source image
+    @param dst destination image
+    @param size to divide width and height by when downsampling (in pixelate)
 */
+int censorFace(cv::Mat &src, cv::Mat &dst, int size) {
+    std::vector<cv::Rect> faces;
+    cv::Mat grey;
+    src.copyTo(dst);
+    cv::cvtColor(src, grey, cv::COLOR_BGR2GRAY, 0);
+    detectFaces(grey, faces);
+
+    // only pixelate what is inside faces
+    for (const auto &f : faces) {
+        // clamp the rect to frame bounds in case the face is at the edge
+        cv::Rect safe = f & cv::Rect(0, 0, dst.cols, src.rows);
+        if (safe.area() == 0)
+            continue;
+
+        cv::Mat face_region = dst(safe);
+        cv::Mat censored;
+        pixelate(face_region, censored, size);
+        censored.copyTo(dst(safe));
+    }
+    return 0;
+}
 
 // Extension: CRT Filter

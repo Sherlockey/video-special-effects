@@ -24,6 +24,8 @@ enum DisplayMode {
     kFaceDetect,
     kGameBoy,
     kEmboss,
+    kPixelate,
+    kcensorFace,
 };
 
 std::ostream &operator<<(std::ostream &os, DisplayMode d) {
@@ -54,6 +56,10 @@ std::ostream &operator<<(std::ostream &os, DisplayMode d) {
         return os << "Game Boy";
     case DisplayMode::kEmboss:
         return os << "Emboss";
+    case DisplayMode::kPixelate:
+        return os << "Pixelate";
+    case DisplayMode::kcensorFace:
+        return os << "Face Censor";
     default:
         return os << "Undefined";
     }
@@ -228,6 +234,22 @@ int main(int argc, char *argv[]) {
             cv::imshow("Video", emboss_frame);
             break;
         }
+        case DisplayMode::kPixelate: {
+            start = std::chrono::high_resolution_clock::now();
+            cv::Mat pixelate_frame;
+            pixelate(frame, pixelate_frame, 15);
+            end = std::chrono::high_resolution_clock::now();
+            cv::imshow("Video", pixelate_frame);
+            break;
+        }
+        case DisplayMode::kcensorFace: {
+            start = std::chrono::high_resolution_clock::now();
+            cv::Mat face_censor_frame;
+            censorFace(frame, face_censor_frame, 15);
+            end = std::chrono::high_resolution_clock::now();
+            cv::imshow("Video", face_censor_frame);
+            break;
+        }
         }
         // print duration if applicable
         std::chrono::duration<double, std::milli> elapsed = end - start;
@@ -279,7 +301,7 @@ int main(int argc, char *argv[]) {
                 displayMode = kBlur5x5_2;
             }
         }
-        if (key == 'p') { // sepia
+        if (key == 'i') { // sepia
             if (displayMode == kSepia) {
                 displayMode = kOriginal;
             } else {
@@ -333,6 +355,20 @@ int main(int argc, char *argv[]) {
                 displayMode = kOriginal;
             } else {
                 displayMode = kEmboss;
+            }
+        }
+        if (key == 'p') { // pixelate
+            if (displayMode == kPixelate) {
+                displayMode = kOriginal;
+            } else {
+                displayMode = kPixelate;
+            }
+        }
+        if (key == 'c') { // censor face
+            if (displayMode == kcensorFace) {
+                displayMode = kOriginal;
+            } else {
+                displayMode = kcensorFace;
             }
         }
     }

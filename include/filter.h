@@ -23,5 +23,7 @@ int magnitude(cv::Mat &sx, cv::Mat &sy, cv::Mat &dst);
 int blurQuantize(cv::Mat &src, cv::Mat &dst, int levels);
 int gameBoy(cv::Mat &src, cv::Mat &dst);
 int emboss(cv::Mat &src, cv::Mat &dst);
+int pixelate(cv::Mat &src, cv::Mat &dst, int size);
+int censorFace(cv::Mat &src, cv::Mat &dst, int size);
 
 #endif // FILTER_H
