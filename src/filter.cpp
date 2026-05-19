@@ -374,10 +374,10 @@ int blurQuantize(cv::Mat &src, cv::Mat &dst, int levels) {
 /*
     Game Boy quantization to four shades of green
 
-    #071821 hex, 33, 24, 7 BGR -- darkest green,
-    #306850 hex, 48, 104, 80 BGR -- dark green,
-    #86c06c hex, 108, 192, 134 BGR -- light green,
-    #e0f8cf hex, 207, 248, 224 BGR -- lightest green,
+    #071821 hex, 15, 56, 15 BGR -- darkest green,
+    #306850 hex, 48, 98, 48 BGR -- dark green,
+    #86c06c hex, 139, 172, 15 BGR -- light green,
+    #e0f8cf hex, 155, 188, 15 BGR -- lightest green,
 
     @param src source image
     @param dst destination image
@@ -394,13 +394,13 @@ int gameBoy(cv::Mat &src, cv::Mat &dst) {
         for (int j = 0; j < tmp.cols; j++) {
             int x = tptr[j];
             if (x < 64) {
-                dptr[j] = cv::Vec3b(33, 24, 7);
+                dptr[j] = cv::Vec3b(15, 56, 15);
             } else if (x < 128) {
-                dptr[j] = cv::Vec3b(48, 104, 80);
+                dptr[j] = cv::Vec3b(48, 98, 48);
             } else if (x < 192) {
-                dptr[j] = cv::Vec3b(108, 192, 134);
+                dptr[j] = cv::Vec3b(139, 172, 15);
             } else {
-                dptr[j] = cv::Vec3b(207, 248, 224);
+                dptr[j] = cv::Vec3b(155, 188, 15);
             }
         }
     }
