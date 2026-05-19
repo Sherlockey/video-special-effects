@@ -5,8 +5,8 @@
    and displaying it in the current DisplayMode. Also displays frame timing.
 */
 
-#include "../include/faceDetect.h"
-#include "../include/filter.h"
+#include "faceDetect.h"
+#include "filter.h"
 #include <chrono>
 #include <opencv2/opencv.hpp>
 

@@ -1,2 +1,3 @@
-cmake -B bin -G Ninja -DCMAKE_TOOLCHAIN_FILE=C:/dev/vcpkg/scripts/buildsystems/vcpkg.cmake
-cmake --build bin
+init: cmake -B bin -G Ninja -DCMAKE_TOOLCHAIN_FILE=C:/dev/vcpkg/scripts/buildsystems/vcpkg.cmake
+clean rebuild: rm -rf bin && cmake -B build && cmake --build bin
+build: cmake --build bin
