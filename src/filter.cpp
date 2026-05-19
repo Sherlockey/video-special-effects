@@ -18,13 +18,12 @@
 */
 
 int greyscale(cv::Mat &src, cv::Mat &dst) {
-    if (dst.size() != src.size() || dst.type() != CV_8UC1) {
-        dst.create(src.rows, src.cols, CV_8UC1);
-    }
+    cv::Mat tmp;
+    tmp.create(src.rows, src.cols, CV_8UC1);
 
     for (int i = 0; i < src.rows; i++) {
         cv::Vec3b *srcptr = src.ptr<cv::Vec3b>(i);
-        uchar *dstptr = dst.ptr<uchar>(i);
+        uchar *tptr = tmp.ptr<uchar>(i);
         for (int j = 0; j < src.cols; j++) {
             short b = srcptr[j][0];
             short g = srcptr[j][1];
@@ -46,10 +45,10 @@ int greyscale(cv::Mat &src, cv::Mat &dst) {
             // short min = std::min({b, g, r});
             // uchar y = min;
 
-            dstptr[j] = y;
+            tptr[j] = y;
         }
     }
-
+    tmp.copyTo(dst);
     return 0;
 }
 
@@ -416,13 +415,14 @@ int gameBoy(cv::Mat &src, cv::Mat &dst) {
     @return error code, 0 on success, -1 on failure
 */
 int emboss(cv::Mat &src, cv::Mat &dst) {
-    dst.create(src.rows, src.cols, src.type());
+    cv::Mat tmp;
+    tmp.create(src.rows, src.cols, src.type());
 
     for (int i = 1; i < src.rows - 1; i++) {
         cv::Vec3b *rm1 = src.ptr<cv::Vec3b>(i - 1);
         cv::Vec3b *r0 = src.ptr<cv::Vec3b>(i);
         cv::Vec3b *rp1 = src.ptr<cv::Vec3b>(i + 1);
-        cv::Vec3b *dp = dst.ptr<cv::Vec3b>(i);
+        cv::Vec3b *tptr = tmp.ptr<cv::Vec3b>(i);
         for (int j = 1; j < src.cols - 1; j++) {
             for (int k = 0; k < 3; k++) {
                 int sum = rm1[j - 1][k] * -1 + rm1[j][k] * -1 +
@@ -430,10 +430,11 @@ int emboss(cv::Mat &src, cv::Mat &dst) {
                           r0[j + 1][k] * 1 + rp1[j - 1][k] * 0 + rp1[j][k] * 1 +
                           rp1[j + 1][k] * 1;
                 sum += 128;
-                dp[j][k] = (uchar)std::clamp(sum, 0, 255);
+                tptr[j][k] = (uchar)std::clamp(sum, 0, 255);
             }
         }
     }
+    tmp.copyTo(dst);
     return 0;
 }
 

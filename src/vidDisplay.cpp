@@ -114,93 +114,80 @@ int main(int argc, char *argv[]) {
             break;
         }
         case DisplayMode::kGreyscale: {
-            cv::Mat greyscale_frame;
             start = std::chrono::high_resolution_clock::now();
-            cv::cvtColor(frame, greyscale_frame, cv::COLOR_BGR2GRAY);
+            cv::cvtColor(frame, frame, cv::COLOR_BGR2GRAY);
             end = std::chrono::high_resolution_clock::now();
-            cv::imshow("Video", greyscale_frame);
+            cv::imshow("Video", frame);
             break;
         }
         case DisplayMode::kAltGreyscale: {
-            cv::Mat alt_greyscale_frame;
             start = std::chrono::high_resolution_clock::now();
-            greyscale(frame, alt_greyscale_frame);
+            greyscale(frame, frame);
             end = std::chrono::high_resolution_clock::now();
-            cv::imshow("Video", alt_greyscale_frame);
+            cv::imshow("Video", frame);
             break;
         }
         case DisplayMode::kBlur5x5_1: {
-            cv::Mat blur_5x5_1_frame;
             start = std::chrono::high_resolution_clock::now();
-            blur5x5_1(frame, blur_5x5_1_frame);
+            blur5x5_1(frame, frame);
             end = std::chrono::high_resolution_clock::now();
-            cv::imshow("Video", blur_5x5_1_frame);
+            cv::imshow("Video", frame);
             break;
         }
         case DisplayMode::kBlur5x5_2: {
-            cv::Mat blur_5x5_2_frame;
             start = std::chrono::high_resolution_clock::now();
-            blur5x5_2(frame, blur_5x5_2_frame);
+            blur5x5_2(frame, frame);
             end = std::chrono::high_resolution_clock::now();
-            cv::imshow("Video", blur_5x5_2_frame);
+            cv::imshow("Video", frame);
             break;
         }
         case DisplayMode::kSepia: {
-            cv::Mat sepia_frame;
             start = std::chrono::high_resolution_clock::now();
-            sepia(frame, sepia_frame);
+            sepia(frame, frame);
             end = std::chrono::high_resolution_clock::now();
-            cv::imshow("Video", sepia_frame);
+            cv::imshow("Video", frame);
             break;
         }
         case DisplayMode::kSobelX3x3: {
-            cv::Mat sobel_x_3x3_output;
             start = std::chrono::high_resolution_clock::now();
+            cv::Mat sobel_x_3x3_output;
             sobelX3x3(frame, sobel_x_3x3_output);
+            cv::convertScaleAbs(sobel_x_3x3_output, frame);
             end = std::chrono::high_resolution_clock::now();
-
-            cv::Mat display_frame;
-            cv::convertScaleAbs(sobel_x_3x3_output, display_frame);
-            cv::imshow("Video", display_frame);
+            cv::imshow("Video", frame);
             break;
         }
         case DisplayMode::kSobelY3x3: {
-            cv::Mat sobel_y_3x3_output;
             start = std::chrono::high_resolution_clock::now();
+            cv::Mat sobel_y_3x3_output;
             sobelY3x3(frame, sobel_y_3x3_output);
+            cv::convertScaleAbs(sobel_y_3x3_output, frame);
+            cv::imshow("Video", frame);
             end = std::chrono::high_resolution_clock::now();
-
-            cv::Mat display_frame;
-            cv::convertScaleAbs(sobel_y_3x3_output, display_frame);
-            cv::imshow("Video", display_frame);
             break;
         }
         case DisplayMode::kGradientMagnitude: {
+            start = std::chrono::high_resolution_clock::now();
             cv::Mat sobel_x_3x3_output;
             cv::Mat sobel_y_3x3_output;
-            cv::Mat gradient_magnitude_frame;
 
-            start = std::chrono::high_resolution_clock::now();
             sobelX3x3(frame, sobel_x_3x3_output);
             sobelY3x3(frame, sobel_y_3x3_output);
-            magnitude(sobel_x_3x3_output, sobel_y_3x3_output,
-                      gradient_magnitude_frame);
+            magnitude(sobel_x_3x3_output, sobel_y_3x3_output, frame);
             end = std::chrono::high_resolution_clock::now();
 
-            cv::imshow("Video", gradient_magnitude_frame);
+            cv::imshow("Video", frame);
             break;
         }
         case DisplayMode::kBlurQuantize: {
-            cv::Mat blur_quantize_frame;
             start = std::chrono::high_resolution_clock::now();
-            blurQuantize(frame, blur_quantize_frame, 10);
+            blurQuantize(frame, frame, 10);
             end = std::chrono::high_resolution_clock::now();
-            cv::imshow("Video", blur_quantize_frame);
+            cv::imshow("Video", frame);
             break;
         }
         case DisplayMode::kFaceDetect: {
             start = std::chrono::high_resolution_clock::now();
-
             std::vector<cv::Rect> faces;
             cv::Mat grey;
             cv::cvtColor(frame, grey, cv::COLOR_BGR2GRAY, 0);
@@ -223,42 +210,38 @@ int main(int argc, char *argv[]) {
         }
         case DisplayMode::kGameBoy: {
             start = std::chrono::high_resolution_clock::now();
-            cv::Mat game_boy_frame;
-            gameBoy(frame, game_boy_frame);
+            gameBoy(frame, frame);
             end = std::chrono::high_resolution_clock::now();
-            cv::imshow("Video", game_boy_frame);
+            cv::imshow("Video", frame);
             break;
         }
         case DisplayMode::kEmboss: {
             start = std::chrono::high_resolution_clock::now();
-            cv::Mat emboss_frame;
-            emboss(frame, emboss_frame);
+            emboss(frame, frame);
             end = std::chrono::high_resolution_clock::now();
-            cv::imshow("Video", emboss_frame);
+            cv::imshow("Video", frame);
             break;
         }
         case DisplayMode::kPixelate: {
             start = std::chrono::high_resolution_clock::now();
-            cv::Mat pixelate_frame;
-            pixelate(frame, pixelate_frame, 15);
+            pixelate(frame, frame, 15);
             end = std::chrono::high_resolution_clock::now();
-            cv::imshow("Video", pixelate_frame);
+            cv::imshow("Video", frame);
             break;
         }
         case DisplayMode::kcensorFace: {
             start = std::chrono::high_resolution_clock::now();
             cv::Mat face_censor_frame;
-            censorFace(frame, face_censor_frame, 15);
+            censorFace(frame, frame, 15);
             end = std::chrono::high_resolution_clock::now();
-            cv::imshow("Video", face_censor_frame);
+            cv::imshow("Video", frame);
             break;
         }
         case DisplayMode::kCRT: {
             start = std::chrono::high_resolution_clock::now();
-            cv::Mat crt_frame;
-            crt(frame, crt_frame);
+            crt(frame, frame);
             end = std::chrono::high_resolution_clock::now();
-            cv::imshow("Video", crt_frame);
+            cv::imshow("Video", frame);
             break;
         }
         }
@@ -269,7 +252,7 @@ int main(int argc, char *argv[]) {
         }
 
         // see if there is a waiting keystroke, if so react accordingly
-        char key = cv::waitKey(10);
+        char key = cv::waitKey(1);
         if (key == 'q') { // quit
             break;
         }
