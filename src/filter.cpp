@@ -476,16 +476,17 @@ int censorFace(cv::Mat &src, cv::Mat &dst, int size) {
     detectFaces(grey, faces);
 
     // only pixelate what is inside faces
-    for (const auto &f : faces) {
+    for (const auto &face : faces) {
         // clamp the rect to frame bounds in case the face is at the edge
-        cv::Rect safe = f & cv::Rect(0, 0, dst.cols, dst.rows);
-        if (safe.area() == 0)
+        cv::Rect rect = face & cv::Rect(0, 0, dst.cols, dst.rows);
+        if (rect.area() == 0) {
             continue;
+        }
 
-        cv::Mat face_region = dst(safe);
+        cv::Mat face_region = dst(rect);
         cv::Mat censored;
         pixelate(face_region, censored, size);
-        censored.copyTo(dst(safe));
+        censored.copyTo(dst(rect));
     }
     return 0;
 }

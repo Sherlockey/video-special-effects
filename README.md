@@ -1,0 +1,4 @@
+- Jonathon Davis
+- Links/URLs: None
+- Time Travel Days: None / 0
+- See da2-video.cpp for my implementation of the creative depth filter.
