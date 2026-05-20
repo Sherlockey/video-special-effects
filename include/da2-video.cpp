@@ -62,6 +62,10 @@ int main(int argc, char *argv[]) {
 
         // if you want to modify the src image based on the depth image, do that
         // here
+
+        // #start Jonathon Davis 2026-05-19
+
+        // "fog" filter where the background becomes darker the further it is
         int threshold = 128;
         for (int i = 0; i < src.rows; i++) {
             cv::Vec3b *sptr = src.ptr<cv::Vec3b>(i);
@@ -77,6 +81,7 @@ int main(int argc, char *argv[]) {
                 }
             }
         }
+        // #end Jonathon Davis 2026-05-19
 
         // display the images
         cv::imshow("Video", src);
