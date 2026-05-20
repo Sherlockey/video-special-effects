@@ -496,15 +496,16 @@ int censorFace(cv::Mat &src, cv::Mat &dst, int size) {
 
     @param src source image
     @param dst destination image
+    @param scanline_strength: 0 = no scanlines, 1 = full black
+    @param subpixel_strength: 0 = no RGB stripes, 1 = full mask
+    @param vignette_strength: 0 = no vignette, 1 = corners fully black
+    @param brightness_boost: boost to offset overall dimming ~2.0f = original
     @return error code, 0 on success, -1 on failure
 */
-int crt(cv::Mat &src, cv::Mat &dst) {
+int crt(cv::Mat &src, cv::Mat &dst, float scanline_strength,
+        float subpixel_strength, float vignette_strength,
+        float brightness_boost) {
     dst.create(src.rows, src.cols, src.type());
-
-    float scanline_strength = 0.35f; // 0 = no scanlines, 1 = full black
-    float subpixel_strength = 0.95f; // 0 = no RGB stripes, 1 = full mask
-    float vignette_strength = 0.65f; // 0 = no vignette, 1 = corners fully black
-    float brightness_boost = 1.50f;
 
     // vignette geometry
     float vx = src.cols * 0.5f;
@@ -538,6 +539,28 @@ int crt(cv::Mat &src, cv::Mat &dst) {
             for (int k = 0; k < 3; k++) {
                 float val = sptr[j][k] * combined * mask[k];
                 dptr[j][k] = (uchar)std::clamp((int)val, 0, 255);
+            }
+        }
+    }
+    return 0;
+}
+
+/*
+    Applies a Negative filter to the image
+
+    @param src source image
+    @param dst destination image
+    @return error code, 0 on success, -1 on failure
+*/
+int negative(cv::Mat &src, cv::Mat &dst) {
+    dst.create(src.rows, src.cols, src.type());
+
+    for (int i = 0; i < src.rows; i++) {
+        cv::Vec3b *sptr = src.ptr<cv::Vec3b>(i);
+        cv::Vec3b *dptr = dst.ptr<cv::Vec3b>(i);
+        for (int j = 0; j < src.cols; j++) {
+            for (int k = 0; k < 3; k++) {
+                dptr[j][k] = 255 - sptr[j][k];
             }
         }
     }

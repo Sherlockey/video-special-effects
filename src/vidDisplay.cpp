@@ -27,6 +27,7 @@ enum DisplayMode {
     kPixelate,
     kcensorFace,
     kCRT,
+    kNegative,
 };
 
 std::ostream &operator<<(std::ostream &os, DisplayMode d) {
@@ -63,6 +64,8 @@ std::ostream &operator<<(std::ostream &os, DisplayMode d) {
         return os << "Face Censor";
     case DisplayMode::kCRT:
         return os << "CRT";
+    case DisplayMode::kNegative:
+        return os << "Negative";
     default:
         return os << "Undefined";
     }
@@ -244,6 +247,13 @@ int main(int argc, char *argv[]) {
             cv::imshow("Video", frame);
             break;
         }
+        case DisplayMode::kNegative: {
+            start = std::chrono::high_resolution_clock::now();
+            negative(frame, frame);
+            end = std::chrono::high_resolution_clock::now();
+            cv::imshow("Video", frame);
+            break;
+        }
         }
         // print duration if applicable
         std::chrono::duration<double, std::milli> elapsed = end - start;
@@ -370,6 +380,13 @@ int main(int argc, char *argv[]) {
                 displayMode = kOriginal;
             } else {
                 displayMode = kCRT;
+            }
+        }
+        if (key == 'n') { // negative
+            if (displayMode == kNegative) {
+                displayMode = kOriginal;
+            } else {
+                displayMode = kNegative;
             }
         }
     }
