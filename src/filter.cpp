@@ -567,3 +567,71 @@ int negative(cv::Mat &src, cv::Mat &dst) {
     }
     return 0;
 }
+
+/*
+    3x3 Corner filter
+     1 -2  1
+    -2  4 -2
+     1 -2  1
+
+    @param src source image
+    @param dst destination image
+    @return error code, 0 on success, -1 on failure
+*/
+int corner(cv::Mat &src, cv::Mat &dst) {
+    cv::Mat tmp;
+    tmp.create(src.rows, src.cols, src.type());
+
+    for (int i = 1; i < src.rows - 1; i++) {
+        cv::Vec3b *rm1 = src.ptr<cv::Vec3b>(i - 1);
+        cv::Vec3b *r0 = src.ptr<cv::Vec3b>(i);
+        cv::Vec3b *rp1 = src.ptr<cv::Vec3b>(i + 1);
+        cv::Vec3b *tptr = tmp.ptr<cv::Vec3b>(i);
+        for (int j = 1; j < src.cols - 1; j++) {
+            for (int k = 0; k < 3; k++) {
+                int sum = rm1[j - 1][k] * 1 + rm1[j][k] * -2 +
+                          rm1[j + 1][k] * 1 + r0[j - 1][k] * -2 + r0[j][k] * 4 +
+                          r0[j + 1][k] * -2 + rp1[j - 1][k] * 1 +
+                          rp1[j][k] * -2 + rp1[j + 1][k] * 1;
+                sum += 128;
+                tptr[j][k] = (uchar)std::clamp(sum, 0, 255);
+            }
+        }
+    }
+    tmp.copyTo(dst);
+    return 0;
+}
+
+/*
+    3x3 Bilinear filter
+    1 2 1
+    2 4 2
+    1 2 1
+
+    @param src source image
+    @param dst destination image
+    @return error code, 0 on success, -1 on failure
+*/
+int bilinear(cv::Mat &src, cv::Mat &dst) {
+    cv::Mat tmp;
+    tmp.create(src.rows, src.cols, src.type());
+
+    for (int i = 1; i < src.rows - 1; i++) {
+        cv::Vec3b *rm1 = src.ptr<cv::Vec3b>(i - 1);
+        cv::Vec3b *r0 = src.ptr<cv::Vec3b>(i);
+        cv::Vec3b *rp1 = src.ptr<cv::Vec3b>(i + 1);
+        cv::Vec3b *tptr = tmp.ptr<cv::Vec3b>(i);
+        for (int j = 1; j < src.cols - 1; j++) {
+            for (int k = 0; k < 3; k++) {
+                int sum = rm1[j - 1][k] * 1 + rm1[j][k] * 2 +
+                          rm1[j + 1][k] * 1 + r0[j - 1][k] * 2 + r0[j][k] * 4 +
+                          r0[j + 1][k] * 2 + rp1[j - 1][k] * 1 + rp1[j][k] * 2 +
+                          rp1[j + 1][k] * 1;
+                sum /= 16;
+                tptr[j][k] = (uchar)std::clamp(sum, 0, 255);
+            }
+        }
+    }
+    tmp.copyTo(dst);
+    return 0;
+}

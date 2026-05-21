@@ -28,6 +28,8 @@ enum DisplayMode {
     kcensorFace,
     kCRT,
     kNegative,
+    kCorner,
+    kBilinear,
 };
 
 std::ostream &operator<<(std::ostream &os, DisplayMode d) {
@@ -66,6 +68,10 @@ std::ostream &operator<<(std::ostream &os, DisplayMode d) {
         return os << "CRT";
     case DisplayMode::kNegative:
         return os << "Negative";
+    case DisplayMode::kCorner:
+        return os << "Corner";
+    case DisplayMode::kBilinear:
+        return os << "Bilinear";
     default:
         return os << "Undefined";
     }
@@ -254,6 +260,20 @@ int main(int argc, char *argv[]) {
             cv::imshow("Video", frame);
             break;
         }
+        case DisplayMode::kCorner: {
+            start = std::chrono::high_resolution_clock::now();
+            corner(frame, frame);
+            end = std::chrono::high_resolution_clock::now();
+            cv::imshow("Video", frame);
+            break;
+        }
+        case DisplayMode::kBilinear: {
+            start = std::chrono::high_resolution_clock::now();
+            bilinear(frame, frame);
+            end = std::chrono::high_resolution_clock::now();
+            cv::imshow("Video", frame);
+            break;
+        }
         }
         // print duration if applicable
         std::chrono::duration<double, std::milli> elapsed = end - start;
@@ -387,6 +407,20 @@ int main(int argc, char *argv[]) {
                 displayMode = kOriginal;
             } else {
                 displayMode = kNegative;
+            }
+        }
+        if (key == 'r') { // corner
+            if (displayMode == kCorner) {
+                displayMode = kOriginal;
+            } else {
+                displayMode = kCorner;
+            }
+        }
+        if (key == 'l') { // bilinear
+            if (displayMode == kBilinear) {
+                displayMode = kOriginal;
+            } else {
+                displayMode = kBilinear;
             }
         }
     }

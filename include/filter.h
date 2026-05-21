@@ -29,5 +29,7 @@ int crt(cv::Mat &src, cv::Mat &dst, float scanline_strength = 0.35f,
         float subpixel_strength = 0.95, float vignette_strength = 0.65f,
         float brightness_boost = 1.50f);
 int negative(cv::Mat &src, cv::Mat &dst);
+int corner(cv::Mat &src, cv::Mat &dst);
+int bilinear(cv::Mat &src, cv::Mat &dst);
 
 #endif // FILTER_H
