@@ -326,6 +326,7 @@ int magnitude(cv::Mat &sx, cv::Mat &sy, cv::Mat &dst) {
         cv::Vec3s *tptr = tmp.ptr<cv::Vec3s>(i);
         for (int j = 0; j < sx.cols; j++) {
             for (int k = 0; k < 3; k++) {
+                // I = sqrt(sx*sx + sy*sy)
                 int mag = std::sqrt((int)sxptr[j][k] * sxptr[j][k] +
                                     (int)syptr[j][k] * syptr[j][k]);
                 tptr[j][k] = mag;
@@ -356,6 +357,7 @@ int blurQuantize(cv::Mat &src, cv::Mat &dst, int levels) {
         cv::Vec3b *dptr = dst.ptr<cv::Vec3b>(i);
         for (int j = 0; j < dst.cols; j++) {
             for (int k = 0; k < 3; k++) {
+                // apply quantization based upon levels (buckets)
                 int x = dptr[j][k];
                 float b = 255.0f / (levels - 1);
                 int xt = x / b;
@@ -389,6 +391,8 @@ int gameBoy(cv::Mat &src, cv::Mat &dst) {
         cv::Vec3b *dptr = dst.ptr<cv::Vec3b>(i);
         for (int j = 0; j < tmp.cols; j++) {
             int x = tptr[j];
+            // using x, apply four shades of green according to evenly
+            // distributed buckets
             if (x < 64) {
                 dptr[j] = cv::Vec3b(15, 56, 15);
             } else if (x < 128) {
@@ -428,6 +432,7 @@ int emboss(cv::Mat &src, cv::Mat &dst) {
                           rm1[j + 1][k] * 0 + r0[j - 1][k] * -1 + r0[j][k] * 0 +
                           r0[j + 1][k] * 1 + rp1[j - 1][k] * 0 + rp1[j][k] * 1 +
                           rp1[j + 1][k] * 1;
+                // boost by 128 then clamp
                 sum += 128;
                 tptr[j][k] = (uchar)std::clamp(sum, 0, 255);
             }
@@ -561,6 +566,7 @@ int negative(cv::Mat &src, cv::Mat &dst) {
         cv::Vec3b *dptr = dst.ptr<cv::Vec3b>(i);
         for (int j = 0; j < src.cols; j++) {
             for (int k = 0; k < 3; k++) {
+                // apply negative by subtracting max value
                 dptr[j][k] = 255 - sptr[j][k];
             }
         }
@@ -593,6 +599,7 @@ int corner(cv::Mat &src, cv::Mat &dst) {
                           rm1[j + 1][k] * 1 + r0[j - 1][k] * -2 + r0[j][k] * 4 +
                           r0[j + 1][k] * -2 + rp1[j - 1][k] * 1 +
                           rp1[j][k] * -2 + rp1[j + 1][k] * 1;
+                // boost by 128 then clamp
                 sum += 128;
                 tptr[j][k] = (uchar)std::clamp(sum, 0, 255);
             }
@@ -627,6 +634,7 @@ int bilinear(cv::Mat &src, cv::Mat &dst) {
                           rm1[j + 1][k] * 1 + r0[j - 1][k] * 2 + r0[j][k] * 4 +
                           r0[j + 1][k] * 2 + rp1[j - 1][k] * 1 + rp1[j][k] * 2 +
                           rp1[j + 1][k] * 1;
+                // divide by amount in system and clamp
                 sum /= 16;
                 tptr[j][k] = (uchar)std::clamp(sum, 0, 255);
             }
