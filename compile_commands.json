@@ -1,32 +1,32 @@
 [
 {
-  "directory": "D:/NU/SU26/computer-vision/cv-project-1/bin",
-  "command": "C:\\PROGRA~1\\LLVM\\bin\\CLANG_~1.EXE -ID:/NU/SU26/computer-vision/cv-project-1/./include -isystem C:/dev/vcpkg/installed/x64-windows/include/opencv4 -O0 -g -Xclang -gcodeview -std=gnu++17 -D_DEBUG -D_DLL -D_MT -Xclang --dependent-lib=msvcrtd -o CMakeFiles\\vidDisplay.dir\\src\\vidDisplay.cpp.obj -c D:\\NU\\SU26\\computer-vision\\cv-project-1\\src\\vidDisplay.cpp",
-  "file": "D:/NU/SU26/computer-vision/cv-project-1/src/vidDisplay.cpp",
-  "output": "D:/NU/SU26/computer-vision/cv-project-1/bin/CMakeFiles/vidDisplay.dir/src/vidDisplay.cpp.obj"
+  "directory": "D:/NU/SU26/computer-vision/video-special-effects/bin",
+  "command": "C:\\PROGRA~1\\LLVM\\bin\\CLANG_~1.EXE -ID:/NU/SU26/computer-vision/video-special-effects/./include -isystem C:/dev/vcpkg/installed/x64-windows/include/opencv4 -O0 -g -Xclang -gcodeview -std=gnu++17 -D_DEBUG -D_DLL -D_MT -Xclang --dependent-lib=msvcrtd -o CMakeFiles\\vidDisplay.dir\\src\\vidDisplay.cpp.obj -c D:\\NU\\SU26\\computer-vision\\video-special-effects\\src\\vidDisplay.cpp",
+  "file": "D:/NU/SU26/computer-vision/video-special-effects/src/vidDisplay.cpp",
+  "output": "D:/NU/SU26/computer-vision/video-special-effects/bin/CMakeFiles/vidDisplay.dir/src/vidDisplay.cpp.obj"
 },
 {
-  "directory": "D:/NU/SU26/computer-vision/cv-project-1/bin",
-  "command": "C:\\PROGRA~1\\LLVM\\bin\\CLANG_~1.EXE -ID:/NU/SU26/computer-vision/cv-project-1/./include -isystem C:/dev/vcpkg/installed/x64-windows/include/opencv4 -O0 -g -Xclang -gcodeview -std=gnu++17 -D_DEBUG -D_DLL -D_MT -Xclang --dependent-lib=msvcrtd -o CMakeFiles\\vidDisplay.dir\\src\\filter.cpp.obj -c D:\\NU\\SU26\\computer-vision\\cv-project-1\\src\\filter.cpp",
-  "file": "D:/NU/SU26/computer-vision/cv-project-1/src/filter.cpp",
-  "output": "D:/NU/SU26/computer-vision/cv-project-1/bin/CMakeFiles/vidDisplay.dir/src/filter.cpp.obj"
+  "directory": "D:/NU/SU26/computer-vision/video-special-effects/bin",
+  "command": "C:\\PROGRA~1\\LLVM\\bin\\CLANG_~1.EXE -ID:/NU/SU26/computer-vision/video-special-effects/./include -isystem C:/dev/vcpkg/installed/x64-windows/include/opencv4 -O0 -g -Xclang -gcodeview -std=gnu++17 -D_DEBUG -D_DLL -D_MT -Xclang --dependent-lib=msvcrtd -o CMakeFiles\\vidDisplay.dir\\src\\filter.cpp.obj -c D:\\NU\\SU26\\computer-vision\\video-special-effects\\src\\filter.cpp",
+  "file": "D:/NU/SU26/computer-vision/video-special-effects/src/filter.cpp",
+  "output": "D:/NU/SU26/computer-vision/video-special-effects/bin/CMakeFiles/vidDisplay.dir/src/filter.cpp.obj"
 },
 {
-  "directory": "D:/NU/SU26/computer-vision/cv-project-1/bin",
-  "command": "C:\\PROGRA~1\\LLVM\\bin\\CLANG_~1.EXE -ID:/NU/SU26/computer-vision/cv-project-1/./include -isystem C:/dev/vcpkg/installed/x64-windows/include/opencv4 -O0 -g -Xclang -gcodeview -std=gnu++17 -D_DEBUG -D_DLL -D_MT -Xclang --dependent-lib=msvcrtd -o CMakeFiles\\vidDisplay.dir\\include\\faceDetect.cpp.obj -c D:\\NU\\SU26\\computer-vision\\cv-project-1\\include\\faceDetect.cpp",
-  "file": "D:/NU/SU26/computer-vision/cv-project-1/include/faceDetect.cpp",
-  "output": "D:/NU/SU26/computer-vision/cv-project-1/bin/CMakeFiles/vidDisplay.dir/include/faceDetect.cpp.obj"
+  "directory": "D:/NU/SU26/computer-vision/video-special-effects/bin",
+  "command": "C:\\PROGRA~1\\LLVM\\bin\\CLANG_~1.EXE -ID:/NU/SU26/computer-vision/video-special-effects/./include -isystem C:/dev/vcpkg/installed/x64-windows/include/opencv4 -O0 -g -Xclang -gcodeview -std=gnu++17 -D_DEBUG -D_DLL -D_MT -Xclang --dependent-lib=msvcrtd -o CMakeFiles\\vidDisplay.dir\\include\\faceDetect.cpp.obj -c D:\\NU\\SU26\\computer-vision\\video-special-effects\\include\\faceDetect.cpp",
+  "file": "D:/NU/SU26/computer-vision/video-special-effects/include/faceDetect.cpp",
+  "output": "D:/NU/SU26/computer-vision/video-special-effects/bin/CMakeFiles/vidDisplay.dir/include/faceDetect.cpp.obj"
 },
 {
-  "directory": "D:/NU/SU26/computer-vision/cv-project-1/bin",
-  "command": "C:\\PROGRA~1\\LLVM\\bin\\CLANG_~1.EXE -IC:/libs/onnxruntime-win-x64-1.26.0/include -ID:/NU/SU26/computer-vision/cv-project-1/./include -isystem C:/dev/vcpkg/installed/x64-windows/include/opencv4 -O0 -g -Xclang -gcodeview -std=gnu++17 -D_DEBUG -D_DLL -D_MT -Xclang --dependent-lib=msvcrtd -o CMakeFiles\\da2-video.dir\\include\\da2-video.cpp.obj -c D:\\NU\\SU26\\computer-vision\\cv-project-1\\include\\da2-video.cpp",
-  "file": "D:/NU/SU26/computer-vision/cv-project-1/include/da2-video.cpp",
-  "output": "D:/NU/SU26/computer-vision/cv-project-1/bin/CMakeFiles/da2-video.dir/include/da2-video.cpp.obj"
+  "directory": "D:/NU/SU26/computer-vision/video-special-effects/bin",
+  "command": "C:\\PROGRA~1\\LLVM\\bin\\CLANG_~1.EXE -IC:/libs/onnxruntime-win-x64-1.26.0/include -ID:/NU/SU26/computer-vision/video-special-effects/./include -isystem C:/dev/vcpkg/installed/x64-windows/include/opencv4 -O0 -g -Xclang -gcodeview -std=gnu++17 -D_DEBUG -D_DLL -D_MT -Xclang --dependent-lib=msvcrtd -o CMakeFiles\\da2-video.dir\\include\\da2-video.cpp.obj -c D:\\NU\\SU26\\computer-vision\\video-special-effects\\include\\da2-video.cpp",
+  "file": "D:/NU/SU26/computer-vision/video-special-effects/include/da2-video.cpp",
+  "output": "D:/NU/SU26/computer-vision/video-special-effects/bin/CMakeFiles/da2-video.dir/include/da2-video.cpp.obj"
 },
 {
-  "directory": "D:/NU/SU26/computer-vision/cv-project-1/bin",
-  "command": "C:\\PROGRA~1\\LLVM\\bin\\CLANG_~1.EXE -isystem C:/dev/vcpkg/installed/x64-windows/include/opencv4 -O0 -g -Xclang -gcodeview -std=gnu++17 -D_DEBUG -D_DLL -D_MT -Xclang --dependent-lib=msvcrtd -o CMakeFiles\\imgDisplay.dir\\src\\imgDisplay.cpp.obj -c D:\\NU\\SU26\\computer-vision\\cv-project-1\\src\\imgDisplay.cpp",
-  "file": "D:/NU/SU26/computer-vision/cv-project-1/src/imgDisplay.cpp",
-  "output": "D:/NU/SU26/computer-vision/cv-project-1/bin/CMakeFiles/imgDisplay.dir/src/imgDisplay.cpp.obj"
+  "directory": "D:/NU/SU26/computer-vision/video-special-effects/bin",
+  "command": "C:\\PROGRA~1\\LLVM\\bin\\CLANG_~1.EXE -isystem C:/dev/vcpkg/installed/x64-windows/include/opencv4 -O0 -g -Xclang -gcodeview -std=gnu++17 -D_DEBUG -D_DLL -D_MT -Xclang --dependent-lib=msvcrtd -o CMakeFiles\\imgDisplay.dir\\src\\imgDisplay.cpp.obj -c D:\\NU\\SU26\\computer-vision\\video-special-effects\\src\\imgDisplay.cpp",
+  "file": "D:/NU/SU26/computer-vision/video-special-effects/src/imgDisplay.cpp",
+  "output": "D:/NU/SU26/computer-vision/video-special-effects/bin/CMakeFiles/imgDisplay.dir/src/imgDisplay.cpp.obj"
 }
 ]
